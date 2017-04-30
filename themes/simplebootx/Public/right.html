@@ -1,0 +1,59 @@
+<div class="search-box">
+	<div class="titleBox">
+		<p class="right-title">搜索</p>
+	</div>
+
+	<form class="navbar-form" role="search" method="get">
+		<input type="text" name="keyword" class="form-control" placeholder="文章关键字" value="{$keyword}">
+		<button type="submit" class="btn">GO</button>
+		<input type="hidden" name="category_id" value="{$category_id}">
+	</form>
+</div>
+
+<div class="category-box">
+	<div class="titleBox">
+		<p class="right-title">分类</p>
+	</div>
+
+	<php>
+		//获取一级分类
+		$category = M('terms')->where("parent = 0")->select();
+	</php>
+	<ul>
+		<volist name="category" id="cate">
+			<li><a href="{:U('/',['category_id'=>$cate['term_id']])}">{$cate.name}({$cate.count})</a></li>
+		</volist>
+	</ul>
+</div>
+
+<div class="article-random-box">
+	<div class="titleBox">
+		<p class="right-title">最新发布</p>
+	</div>
+	<php>
+		$last_post=sp_sql_posts("cid:5;field:post_title,post_excerpt,object_id,term_id,smeta;order:listorder asc;limit:10;"); 
+	</php>
+	<ul>
+		<foreach name="last_post" item="vo">
+			<li><a href="{:leuu('article/index',array('id'=>$vo['object_id'],'cid'=>$vo['term_id']))}">{$vo.post_title}</a></li>
+		</foreach>
+	</ul>
+</div>
+<div class="link-box">
+	<div class="titleBox">
+		<p class="right-title">友情链接</p>
+	</div>
+		<php>$links=sp_getlinks();</php>
+	<ul>
+		<foreach name="links" item="vo">
+			<li>
+				<notempty name="vo.link_image">
+					<a href="{$vo.link_url}" target="{$vo.link_target}"><img src="{:sp_get_image_url($vo['link_image'])}"></a>
+				</notempty>
+				<p><a href="{$vo.link_url}" target="{$vo.link_target}">{$vo.link_name}</a></p>
+			</li>
+		</foreach>
+
+
+	</ul>
+</div>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+	<html>
+	<head>
+		<title>{$post_title} {$site_name} </title>
+		<meta name="keywords" content="{$post_keywords}" />
+		<meta name="description" content="{$post_excerpt}">
+		<tc_include file="Public:head" />
+		<style>
+			#article_content img{height:auto !important}
+			#article_content {word-wrap: break-word;}
+			.article-box{padding: 10px 15px;}
+    		.btn {margin-top: 33px;}
+		</style>
+	</head>
+<body class="">
+<tc_include file="Public:nav" />
+<div class="container tc-main">
+	<div class="row">
+		<div class="col-sm-8">
+			
+			<div class="tc-box first-box article-box">
+		    	<h2>{$post_title}</h2>
+		    	<div class="article-infobox">
+		    		<span>{$post_date}</span>
+		    		<span>
+		    			<a href="javascript:;"><i class="layui-icon">&#xe600;</i><span>{$post_hits}</span></a>
+						<a href="{:U('user/favorite/do_favorite',array('id'=>$article_id))}" class="js-favorite-btn" data-title="{$post_title}" data-url="{:leuu('article/index',array('id'=>$article_id,'cid'=>$term_id))}" data-key="{:sp_get_favorite_key('posts',$article_id)}">
+							<i class="fa fa-star-o"></i>
+						</a>
+					</span>
+		    	</div>
+		    	<hr>
+		    	<div id="article_content">
+		    	{$post_content}
+		    	</div>
+                <if condition="!empty($post_source)">
+                    <div>
+                        <b>注：本文转载自{$post_source}，转载目的在于传递更多信息，并不代表本网赞同其观点和对其真实性负责。如有侵权行为，请联系我，我会及时删除。</b>
+                    </div>
+    			</if>
+		    </div>
+		    
+		    <php>$ad=sp_getad("portal_article_bottom");</php>
+			<if condition="!empty($ad)">
+        	<div class="tc-box">
+	        	<div class="headtitle">
+	        		<h2>赞助商</h2>
+	        	</div>
+	        	<div>
+		        	{$ad}
+		        </div>
+			</div>
+			</if>
+		    
+		</div>
+		<div class="col-sm-4">
+        	<tc_include file="Public:right"/>
+		</div>
+		
+	</div>
+              
+	<tc_include file="Public:footer"/>
+</div>
+
+</body>
+</html>

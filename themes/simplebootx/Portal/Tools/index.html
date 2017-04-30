@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>boke</title>
+	<meta name="viewport" id="viewport" content="width=device-width, initial-scale=1"> 
+	<tc_include file="Public:head" />
+	<style>
+		body{color: #666;}
+		.strtotime-box{background-color: #fff;padding: 8px;}
+		.tools-title{font-size: 18px;padding-left: 13px;}
+		.tools-1{padding: 3px;}
+		.tools-1 input{border: 1px solid #ddd;height: 38px;line-height: 32px;padding: 2px;padding-left: 5px;border-radius: 1px;margin: 0px 5px;}
+		.strtotime-box label{display: inline-block;color: #666;font-size: 13px;padding-left: 12px;font-weight: 600;}
+		.tools-1 button{background: #efefef;}
+		
+		.json-box{background-color: #fff;height: 350px;margin-top: 10px;padding: 5px;}
+		.json-box textarea{height: 200px;}
+		.json-box button{margin-top: 10px;}
+	</style>
+</head>
+<body>
+	<tc_include file="Public:nav" />
+
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="strtotime-box">
+					<p class="tools-title">时间戳转换</p>
+					<label>当前Unix时间戳(支持10位和13位时间戳)</label>
+					<div class="tools-1">
+						<input class="date-1" type="text" placeholder="当前Unix时间戳" value="<?=time()?>" />
+						<button class="layui-btn layui-btn-primary" lay-submit lay-filter="formDemo" onclick="tostrtotime()">转换</button>
+						<input class="strtotime-1" type="text" name="" />
+					</div>
+					<label>北京时间转Unix</label>
+					<div class="tools-1">
+						<input class="date-2" type="text" style="width: 230px;" placeholder="时间格式：2017/01/01 12:30:00" value="2017/01/01 12:30:00" />
+						<button class="layui-btn layui-btn-primary" lay-submit lay-filter="formDemo"  onclick="todate()">转换为Unix时间</button>
+						<input class="strtotime-2" type="text" name="" />
+					</div>
+				</div>
+				<div class="json-box">
+					<p class="tools-title">JSON格式化及高亮</p>
+					<textarea name="desc" placeholder='{"name":"\u5F20\u4E09","addtime":"2014-01-01","username":"abc","id":5}' class="layui-textarea json_txt"></textarea>
+					<button class="layui-btn layui-btn-primary" lay-submit lay-filter="formDemo"  onclick="tojson()">转换</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<tc_include file="Public:footer"/>
+	<script type="text/javascript">
+		/*时间戳转化时间*/
+		function tostrtotime(){
+			var unixtime = $(".date-1").val();
+			if(unixtime.length == 10){
+				var timestr = new Date(parseInt(unixtime) * 1000);
+				var datetime = timestr.toLocaleString().replace(/年|月/g,"-").replace(/日/g," ").replace(/-/g,"\/");
+				$(".strtotime-1").val( datetime );
+			}else if(unixtime.length == 13){
+				var timestr = new Date(parseInt(unixtime));
+				var datetime = timestr.toLocaleString().replace(/年|月/g,"-").replace(/日/g," ").replace(/-/g,"\/");
+				$(".strtotime-1").val( datetime );
+			}else{
+				$(".strtotime-1").val('');
+			}
+		}
+
+		/*时间转换时间戳*/
+		function todate(){
+			var stringTime = $(".date-2").val();
+			var timestamp2 = Date.parse(new Date(stringTime));
+			timestamp2 = timestamp2 / 1000;
+			$(".strtotime-2").val(timestamp2);
+		}
+
+		/*json美化*/
+		function tojson(){
+			var json_txt = $(".json_txt").val();
+			json_txt = JSON.parse(json_txt);
+			$(".json_txt").val( JSON.stringify(json_txt,null,4) );
+
+		}
+	</script>
+</body>
+</html>
