@@ -2,15 +2,20 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>boke</title>
+	<title>{:C('WEB_TITLE')}</title>
+	<meta name="keywords" content="{:C('WEB_KEYWORDS')}" />
+	<meta name="description" content="{:C('WEB_DESCRIPTION')}">
 	<meta name="viewport" id="viewport" content="width=device-width, initial-scale=1"> 
 	<tc_include file="Public:head" />
 	<style>
-		.comment-box{height: 500px;background-color: #fff;overflow: hidden;}
+		.comment-box{height: 500px;overflow: hidden;position: relative;  }
+		.comment-box .bg{position: absolute;width: 100%;height: 100%;top: 0px;left: 0px;}
 		.comment-box .content{height: 500px;width: 1000px;position: relative;}
 		.comment-box p{position: absolute;}
 		.message-box{background-color: #fff;padding: 20px;}
 		.nickname{width: 30%;}
+		.layui-input-block{margin-left: 0px;}
+		.swiper-container{height: 500px;z-index: -99;}
 	</style>
 </head>
 <body>
@@ -23,13 +28,23 @@
 					<div class="content">
 						<p v-for="p in list_p" :style="{left: p.left+'px',top: p.top + 'px',color: p.color,fontSize:p.fontSize+'px' }">{{p.title}}</p>
 					</div>
+					<div class="bg">
+						<div class="swiper-container">
+						    <div class="swiper-wrapper">
+						        <div class="swiper-slide" style="background-image: url(http://wpicture.oss-cn-shanghai.aliyuncs.com/boke/images/comment_bg_1.jpg);background-size: 100%100%;"></div>
+						        <div class="swiper-slide" style="background-image: url(http://wpicture.oss-cn-shanghai.aliyuncs.com/boke/images/comment_bg_2.jpg);background-size: 100%100%;"></div>
+						        <div class="swiper-slide" style="background-image: url(http://wpicture.oss-cn-shanghai.aliyuncs.com/boke/images/comment_bg_3.jpg);background-size: 100%100%;"></div>
+						        <div class="swiper-slide" style="background-image: url(http://wpicture.oss-cn-shanghai.aliyuncs.com/boke/images/comment_bg_4.jpg);background-size: 100%100%;"></div>
+						    </div>
+					    </div>
+					</div>
 				</div>
 				<div class="message-box">
 					<div class="layui-form-item layui-form-text">
-						<label class="layui-form-label">留言</label>
-					<div class="layui-input-block">
-						<textarea name="desc" placeholder="请输入留言" class="layui-textarea"></textarea>
-					</div>
+						<!-- <label class="layui-form-label">留言</label> -->
+						<div class="layui-input-block">
+							<textarea name="desc" placeholder="请输入留言" class="layui-textarea"></textarea>
+						</div>
 					</div>
 					<div class="layui-form-item">
 						<div class="layui-input-block">
@@ -46,6 +61,7 @@
 	</div>
 	<tc_include file="Public:footer"/>
 	<script type="text/javascript" src="/public/layui/src/lay/modules/layer.js"></script>
+	<script type="text/javascript" src="./public/swiper/swiper.min.js"></script>
 	<script type="text/javascript">
 		var width = $(".comment-box").width();
 		var height = $(".comment-box").height()-30;
@@ -109,6 +125,12 @@
 		        	}
 		    }});
 		});
+
+
+		var mySwiper = new Swiper('.swiper-container', {
+			autoplay: 5000,//可选选项，自动滑动
+			effect : 'fade',
+		})
 	</script>
 </body>
 </html>

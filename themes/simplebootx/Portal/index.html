@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>boke</title>
+	<title>{:C('WEB_TITLE')}</title>
+	<meta name="keywords" content="{:C('WEB_KEYWORDS')}" />
+	<meta name="description" content="{:C('WEB_DESCRIPTION')}">
 	<meta name="viewport" id="viewport" content="width=device-width, initial-scale=1"> 
 	<tc_include file="Public:head" />
 	<style>
@@ -25,7 +27,7 @@
 						<div class="swiper-container">
 						  <div class="swiper-wrapper">
 						  	<foreach name="home_slides" item="vo">
-						  		<div class="swiper-slide blue-slide" style="max-height: 300px;">
+						  		<div class="swiper-slide" style="max-height: 300px;">
 						  		<a href="{$vo.slide_url}">
 						  			<div class="title" data-swiper-parallax="-100" style="transform: translate3d(0px, 0px, 0px); transition-duration: 0ms;background-image: url({:sp_get_asset_upload_path($vo['slide_pic'])});color: #efefef;">{$vo.slide_name}
 						  			</div>
@@ -66,7 +68,7 @@
 										<div class="time">
 											<i class="layui-icon">&#xe637;</i>
 											<span>发布时间：{$vo.post_date}</span>
-											<i class="layui-icon">&#xe600;</i>
+											<i class="fa fa-eye"></i>
 											<span>{$vo.post_hits}</span>
 										</div>
 										<a class="layui-btn" href="{:leuu('article/index',array('id'=>$vo['object_id'],'cid'=>$vo['term_id']))}">查看原文</a>

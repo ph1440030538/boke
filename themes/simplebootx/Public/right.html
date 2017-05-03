@@ -50,7 +50,9 @@
 				<notempty name="vo.link_image">
 					<a href="{$vo.link_url}" target="{$vo.link_target}"><img src="{:sp_get_image_url($vo['link_image'])}"></a>
 				</notempty>
-				<p><a href="{$vo.link_url}" target="{$vo.link_target}">{$vo.link_name}</a></p>
+				<empty name="vo.link_image">
+					<p><a href="{$vo.link_url}" target="{$vo.link_target}">{$vo.link_name}</a></p>
+				</empty>
 			</li>
 		</foreach>
 

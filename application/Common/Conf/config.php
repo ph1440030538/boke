@@ -93,7 +93,10 @@ $configs= array(
         	'__UPLOAD__' => __ROOT__.'/data/upload/',
         	'__STATICS__' => __ROOT__.'/statics/',
             '__WEB_ROOT__'=>__ROOT__
-        )
+        ),
+        'WEB_TITLE' => '浮云-博客-梦想起飞的地方',
+        'WEB_KEYWORDS' => '浮云-博客-梦想起飞的地方',
+        'WEB_DESCRIPTION' => '浮云-博客-梦想起飞的地方',
 );
 
 return  array_merge($configs,$db,$runtime_config);

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+	<html>
+	<head>
+		<title>{$post_title} {$site_name} </title>
+		<meta name="keywords" content="{$post_keywords}" />
+		<meta name="description" content="{$post_excerpt}">
+		<tc_include file="Public:head" />
+		<style>
+			#article_content img{height:auto !important}
+			#article_content {word-wrap: break-word;}
+			.article-box{padding: 10px 15px;}
+    		.btn {margin-top: 33px;}
+    		.visitor-box{float: right;}
+    		.visitor-box i{margin: 0px 3px;}
+    		.download{margin-top: 10px;}
+		</style>
+	</head>
+<body class="">
+<tc_include file="Public:nav" />
+<div class="container tc-main">
+	<div class="row">
+		<div class="col-sm-8">
+			
+			<div class="tc-box first-box article-box">
+		    	<h2>{$title}</h2>
+		    	<div class="article-infobox">
+		    		<span>{$create_time|date='Y-m-d',###}</span>
+		    		<span class="visitor-box">
+		    			<a href="javascript:;">
+		    				<i class="fa fa-eye"></i><span>{$visitor}</span>
+	<!-- 	    				<i class="fa fa-download"></i><span>{$down_num}</span> -->
+		    			</a>
+						<a href="{:U('user/favorite/do_favorite',array('id'=>$article_id))}" class="js-favorite-btn" data-title="{$post_title}" data-url="{:leuu('article/index',array('id'=>$article_id,'cid'=>$term_id))}" data-key="{:sp_get_favorite_key('posts',$article_id)}">
+						</a>
+					</span>
+		    	</div>
+		    	<hr>
+		    	<div id="article_content">
+		    		{$content}
+		    	</div>
+		    	<if condition="!empty($file_addr)">
+			    	<div class="download">
+						下载地址：<a href="{$file_addr}">{$file_name}</a>
+			    	</div>
+		    	</if>
+				<if condition="!empty($post_source)">
+	                <div>
+	                    <b>注：本文转载自<a href="{$post_source}">{$post_source}</a>，转载目的在于传递更多信息，并不代表本网赞同其观点和对其真实性负责。如有侵权行为，请联系我，我会及时删除。</b>
+	                </div>
+				</if>
+
+		    </div>
+		    
+		</div>
+		<div class="col-sm-4">
+        	<tc_include file="Public:right"/>
+		</div>
+		
+	</div>
+              
+	<tc_include file="Public:footer"/>
+</div>
+
+</body>
+</html>
