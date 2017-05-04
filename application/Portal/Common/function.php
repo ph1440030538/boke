@@ -229,7 +229,7 @@ function sp_get_terms($tag,$where=array()){
  * @return array
  */
 function sp_admin_get_tpl_file_list(){
-	$template_path=C("SP_TMPL_PATH").C("SP_DEFAULT_THEME")."/Portal/";
+	$template_path=C("SP_TMPL_PATH").C("SP_DEFAULT_THEME")."/Article/";
 	$files=sp_scan_dir($template_path."*");
 	$tpl_files=array();
 	foreach ($files as $f){

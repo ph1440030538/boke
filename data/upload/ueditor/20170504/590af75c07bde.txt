@@ -1,0 +1,98 @@
+﻿联表查询
+1.商品表   basic_goods  关联   basic_goods_sku
+
+2.订单表   basic_order  关联  basic_oder_goods,basic_user,basic_order_refund
+3.活动商品的查询   basic_activity_extend  关联  basic_activity
+SELECT bap.*,bcp.prize FROM `basic_activity_prize` bap LEFT JOIN `basic_config_prize` bcp ON bcp.id=bap.prize_id  WHERE bap.`sess_id` =:sess_id ORDER BY bap.`id` DESC LIMIT {$start},{$size}
+4.搜索商品属于哪个分类   basic_category_goods  关联  basic_category
+SELECT bc.cat_name FROM `basic_category_goods` AS bcg LEFT JOIN `basic_category` AS bc ON bcg.cat_id = bc.id WHERE bcg.goods_id = :goods_id
+5.查询吃乎评论列表
+SELECT bcc.*,bc.chihu_title,bu.nickname,bu.mobile FROM `basic_chihu_comment` AS bcc LEFT JOIN `basic_chihu_page` AS bc ON bc.id = bcc.page_id LEFT JOIN `basic_user` AS bu ON bu.id = bcc.uid WHERE {$where} ORDER BY {$params['order_by']} LIMIT :offset,:limit
+6.查看用户的优惠券
+SELECT cc.id,cc.cou_name,uc.is_used,cc.use_start_time,cc.use_end_time,cc.use_term,uc.use_start_time as start_time,uc.use_end_time as end_time FROM basic_user_coupon AS uc LEFT JOIN basic_coupon_concept AS cc ON uc.couid=cc.id WHERE uc.uid = :uid
+7.获取商品的skuid和商品名字
+SELECT s.id,s.goods_name FROM basic_goods_sku AS s LEFT JOIN basic_goods AS g ON s.goods_id = g.id WHERE g.status = 1
+8.查询积分订单
+"SELECT " . $field . " FROM " . $this->tablePrefix . "basic_integralmall_order AS a LEFT JOIN basic_user AS b ON a.uid=b.id " . $where .$order. " LIMIT " . $search['start'] . "," . $search['pagesize']
+9.查询优惠券激活码对应的优惠券信息
+SELECT basic_coupon_concept.cou_name,basic_virtual_card.couid,basic_virtual_card.delivery,COUNT(basic_virtual_card.id) AS total_number,basic_virtual_card.`create_time`,basic_virtual_card.`action_user`,basic_virtual_card.id FROM basic_virtual_card LEFT JOIN basic_coupon_concept ON basic_coupon_concept.`id` = basic_virtual_card.`couid` GROUP BY basic_virtual_card.delivery,basic_virtual_card.couid,basic_virtual_card.create_time ORDER BY basic_coupon_concept.id DESC
+10.助力活动
+basic_cheer_config 关联 BasicCheerGroup  
+11.积分兑换记录
+basic_integralmall_exchange_record 关联 basic_user
+12.积分订单表  
+basic_kt_bcards   关联 basic_user
+13.退款订单表
+basic_order_refund   关联 basic_user和basic_order_goods和basic_order
+14.退款订单记录表
+basic_order_refund_flow   关联 basic_user和basic_order_goods和basic_order
+15.用户评论表
+basic_user_comment   关联 basic_user和basic_order_goods和basic_order
+16.用户信息扩展
+basic_user_extend   关联 bsic-config-trade
+17.分销用户信息
+commission_channel_user_relation   关联   basic_user
+
+总共: 17个关联查询
+
+
+需要改动的方法
+活动展示（ActivityAdController） 6个方法
+活动表【特卖，促销活动，拍立减活动，限购秒杀】（ActivityController）12个方法
+活动表【N元任远N件，N件减N元，单个商品满减】（ActivityNnController）20个方法
+转盘抽奖（ActivityPrizeController）18个方法
+活动类型（ActivityTypeController） 4个方法
+投票工具 （ActivityVoteController）7个方法
+app评论 （AppCommentsController） 6个方法
+广告位管理（BannerController） 6个方法
+商品品牌（BrandController） 4个方法
+商品分类（CategoryController） 10个方法
+商品评论（CommentController） 6个方法
+商品仓库（WarehouseController） 4个方法
+添加商品的商品搜索的方法（CommonController） 12个方法
+配置表（ConfigController） 8个方法
+优惠券分享配置（ConfigShareController）  10个方法
+优惠券表 （CouponConceptController）15个方法
+活动html页面（CustomPageController）7个方法
+商品（GoodsController）15个方法
+H5底部固定模块（H5BottomTyleController）8个方法
+邀请好友（InviteConfigController） 9个方法
+用户积分（MarkController） 8个方法
+首页菜单icon或者底部icon（NavController）  7个方法
+订单表（OrderController）   13个方法
+订单导出（OrderExportController） 1个方法
+订单退款退货（OrderRefundController） 31个方法
+采购预定（PurchaseBookController） 3个方法
+挖宝（TreasureController） 10个方法
+用户（UserController） 10个方法
+优惠券激活码（VirtualCardController） 4个方法
+----------------------------------------------------
+助力配置（CheerConfigController） 4个方法
+助力分组（CheerGroupController） 4个方法
+助力订单（CheerOrderController）2个方法
+--------------------------------------------------
+吃乎分类（ChihuCategoryController） 8个方法
+吃乎评论（ChihuCommentController）6个方法
+吃乎文章（ChihuController）6个方法
+--------------------------------------------------
+积分商城活动（IntegralmallActivityController）   6个方法
+积分商城兑换记录（IntegralmallExchangeRecordController）  5个方法
+积分商城订单（IntegralmallOrderController） 12个方法
+积分商城商品（IntegralmallGoodsController） 5个方法
+----------------------------------------------------------
+提货卡（KsCardsController） 5个方法
+提货卡类型（KsCardcatsController）7个方法
+提货卡订单（KsOrderController）5个方法
+充值卡（KtBcardsController） 6个方法
+----------------------------------------------------------------------
+分销渠道管理（ChannelLevelInfoController） 7个方法
+分销渠道人员（ChannelUserRelationController） 7个方法
+分销体现申请（WithdrawalApplyController） 6个方法
+分销体现日志（WithdrawalLogController） 5个方法
+
+总共 47个控制器  380个方法
+
+废除的控制器
+CouponController
+GoodsCategoryController
+TagsController

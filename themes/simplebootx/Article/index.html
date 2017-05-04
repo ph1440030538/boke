@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>{:C('WEB_TITLE')}</title>
+	<meta name="keywords" content="{:C('WEB_KEYWORDS')}" />
+	<meta name="description" content="{:C('WEB_DESCRIPTION')}">
+	<meta name="viewport" id="viewport" content="width=device-width, initial-scale=1"> 
+	<tc_include file="Public:head" />
+	<style>
+		.swiper-title{position: absolute;bottom: 0px;display: inline-block;height: 40px;}
+	</style>
+</head>
+<body>
+	<tc_include file="Public:nav" />
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-8">
+				<!--正文-->
+				<div class="artilce-container">
+					<volist name="lists['posts']" id="vo">
+						<php>
+							$smeta=json_decode($vo['smeta'], true);
+						</php>
+						<article class="article-box">
+						    <a style="color: #333;" href="{:leuu('article/index',array('id'=>$vo['object_id'],'cid'=>$vo['term_id']))}"><h3 class="article-title">{$vo.post_title}</h3></a>
+						    <div class="article-content">
+						    	<div class="row">
+						    		<if condition="!empty($smeta['thumb'])">
+										<div class="article-left col-sm-4 col-xs-4">
+											<a href="{:leuu('article/index',array('id'=>$vo['object_id'],'cid'=>$vo['term_id']))}"><img src="{:sp_get_asset_upload_path($smeta['thumb'])}"></a>
+										</div>
+									</if>
+									<div class="article-right col-sm-8 col-xs-8">
+										<a href="{:leuu('article/index',array('id'=>$vo['object_id'],'cid'=>$vo['term_id']))}"><p>{$vo.post_excerpt|msubstr=0,256}</p></a>
+									</div>
+									<div class="article-footer col-sm-12 col-xs-12">
+										<div class="time">
+											<i class="layui-icon">&#xe637;</i>
+											<span>发布时间：{$vo.post_date}</span>
+											<i class="fa fa-eye"></i>
+											<span>{$vo.post_hits}</span>
+										</div>
+										<a class="layui-btn" href="{:leuu('article/index',array('id'=>$vo['object_id'],'cid'=>$vo['term_id']))}">查看原文</a>
+									</div>
+								</div>
+						    </div>
+						</article>
+					</volist>
+				</div>
+				<!--正文结束-->
+				<!--分页-->
+				<div class="pagination"><ul>{$lists['page']}</ul></div>
+				<!--分页结束-->
+			</div>
+			<div class="col-sm-4">
+				<tc_include file="Public:right"/>
+			</div>
+		</div>
+	</div>
+	<tc_include file="Public:footer"/>
+</body>
+</html>
