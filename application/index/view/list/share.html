@@ -1,0 +1,94 @@
+<style type="text/css">	
+	*{padding: 0px;margin:0px;}
+	
+	article{background-color: #efefef;float: left;}
+	.boke-title{margin-left: 0.8%;}
+	.resource-cover img{-webkit-animation:imgBig 1s;animation:imgBig 1s;width: 100%;height: 196px;}
+	.resource-button{text-align: center;padding-top: 10px;border-top: 1px dashed #ddd;}
+	.resource-button button{text-align: center;width: 33%;padding: 0px;text-align: center;}
+	.resource-title h3{text-align: center;font-size: 23px;color: #393D49;padding: 3px 0px;}
+	.resource-title p{font-size: 13px;color: #666;padding: 3px 2px 6px;}
+
+	@media screen and (max-width: 680px) {
+	    article{margin:3%;width: 88%;padding: 3%;}
+	}
+	@media screen and (min-width: 680px) and (max-width: 1180px) {
+	    article{margin:1%;width: 29.8%;padding: 0.6%;}
+	}
+	@media screen and (min-width: 1180px) {
+	    article{margin:0.8%;width: 22.2%;padding: 0.6%;}
+	}
+
+	@keyframes imgBig
+	{
+		from {width:0px;}
+		to {width:100%;}
+	}
+	@-webkit-keyframes imgBig
+	{
+		from {width:0px;}
+		to {width:100%;}
+	}
+</style>
+
+<div class="share-page boke-wrap">
+	<div class="boke-title">
+		<span class="layui-breadcrumb">
+			<a href="/">首页</a>
+			<a href="javascript:;">作品展示</a>
+			<a><cite>{$category['name']}</cite></a>
+		</span>
+	</div>
+	<div class="box">
+		<?php foreach($list['data'] as $vo):?>
+			<article>
+				<div class="resource-cover">
+					<img src="{$vo['cover']}">
+				</div>
+				<div class="resource-title">
+					<h3>{$vo['title']}</h3>
+					<p>{$vo['describe']}</p>
+				</div>
+				<div class="resource-button">
+					<button class="layui-btn layui-btn-primary">
+						<i class="fa fa-eye fa-fw"></i>演示
+					</button>
+					<button class="layui-btn layui-btn-primary">
+						<i class="fa fa-download fa-fw"></i>下载
+					</button>
+				</div>
+			</article>
+		<?php endforeach?>
+        <div class="page">
+            <div id="page"></div>
+        </div>
+
+	</div>
+</div>
+<script type="text/javascript">
+    layui.use(['laypage', 'layer','form'], function(){
+        var laypage = layui.laypage
+        ,layer = layui.layer;
+        laypage({
+            cont: 'page'
+            ,pages: {$list['pages']} //总页数
+            ,groups: 5 //连续显示分页数
+            ,curr: {$list['curPage']}
+            ,skip: true
+            ,jump: function(obj, first){
+                if(!first){
+                    var url = window.location.href;
+                    if(url.indexOf("?")==-1){
+                        window.location.href = url+"?page="+obj.curr;
+                    }else{
+                        if(url.indexOf("page")==-1){
+                            window.location.href = url+"&page="+obj.curr;
+                        }else{
+                            window.location.href = url.replace(/page=\d*/, 'page='+obj.curr)
+                        }                                        
+                    }
+                }                       
+            }
+        });
+    });
+</script>

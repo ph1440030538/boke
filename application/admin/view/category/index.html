@@ -1,0 +1,78 @@
+<style type="text/css">
+    .page-title{position: relative;}
+    .page-title h1{background-color: #fff;font-size: 20px;color:#393D49;font-weight: 300;padding: 10px 30px 10px 20px;border-bottom: 1px solid #dfdfdf;}
+    .add-btn{float: right;margin-right: 20px;}
+    .search-submit{margin-top: 20px;}
+    .btn-box{margin-left: 10px;}
+    .layui-table tfoot,.search-box {background-color: #efefef;}
+    .search-box{padding: 10px 20px;}
+    .search-box .layui-inline{margin: 3px;}
+</style>
+<div class="boke-wrap">
+    <div class="layui-tab">
+        <ul class="layui-tab-title">
+            <li class="layui-this">分类列表</li>
+            <li><a href="{:Url('add')}">添加分类</a></li>
+        </ul>
+    </div>
+
+    <div class="">
+        <table class="layui-form layui-table" lay-skin="line">
+            <colgroup>
+                <col width="100">
+                <col>
+                <col width="100">
+                <col width="200">
+            </colgroup>
+
+            <thead>
+                <tr>
+                    <td>id</td>
+                    <th>分类名字</th>
+                    <th>排序</th>
+                    <th>操作</th>
+                </tr> 
+            </thead>
+            <tbody>
+                {volist name="list" id="vo"}
+                    <tr data-id="{$vo.id}">
+                        <td>{$vo.id}</td>
+                        <td>
+                            {$vo.name}
+                        </td>
+                        <td><input class="layui-input" type="text" value="{$vo.sort}"></td>
+                        <td>
+                            <a class="layui-btn layui-btn-mini" href="{:Url('add')}?id={$vo['id']}">添加子菜单</a>
+                            <a class="layui-btn layui-btn-mini" href="{:Url('edit')}?id={$vo['id']}">编辑</a>
+                            <a class="layui-btn layui-btn-mini layui-btn-danger" href="javascript:;" onclick="del({$vo.id})" >删除</a>
+                        </td>
+                    </tr>
+                {/volist}
+            </tbody>
+        </table>
+    </div>
+
+    <script type="text/javascript">
+        layui.use(['layer']);
+        function del(id){
+            layer.confirm('是否确定删除？', {
+                btn: ['是','否'] //按钮
+            }, function(){
+                $.ajax({
+                    type : 'post',
+                    url : "{:Url('deleteAll')}",
+                    data : {id:id},
+                    dataType: 'json',
+                    success: function(result){
+                        if(result['status'] == 200){
+                            $("tr[data-id="+id+"]").remove();
+                            layer.closeAll();
+                        }else{
+                            layer.msg(result.msg);
+                        }
+                    }
+                });
+            });
+        }
+    </script>
+</div>

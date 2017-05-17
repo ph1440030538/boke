@@ -1,0 +1,106 @@
+<style type="text/css">
+	.layui-form{padding: 10px;overflow: hidden;zoom: 1;}
+	#LAY_demo_upload{max-width: 100%;
+		max-height: 160px;}
+</style>
+<div class="boke-wrap">
+    <div class="layui-tab">
+        <ul class="layui-tab-title">
+            <li><a href='{:Url("index")}' >后台菜单列表</a></li>
+            <li class="layui-this"><a href='javascript:;' >编辑后台菜单</a></li>
+        </ul>
+    </div>
+
+	<form class="layui-form" method="post">
+		<div class="layui-form-item">
+			<label class="layui-form-label">父级菜单</label>
+			<div class="layui-input-inline">
+				<select name="parentid" lay-verify="required">
+					<option value="0">最高级</option>
+					{$option}
+				</select>
+			</div>
+		</div>
+
+		<div class="layui-form-item">
+			<label class="layui-form-label">菜单名称</label>
+			<div class="layui-input-inline">
+				<input type="text" name="name" lay-verify="required" placeholder="请输入菜单名称" class="layui-input" value="{$model['name']}" >
+			</div>
+		</div>
+
+		<div class="layui-form-item">
+			<label class="layui-form-label">应用名称</label>
+			<div class="layui-input-inline">
+				<input type="text" name="app" lay-verify="required" placeholder="请输入应用名称" class="layui-input"  value="{$model['app']}" >
+			</div>
+			<label class="layui-form-label">控制器</label>
+			<div class="layui-input-inline">
+				<input type="text" name="model" lay-verify="required" placeholder="请输入控制器" class="layui-input"  value="{$model['model']}" >
+			</div>
+			<label class="layui-form-label">操作名称</label>
+			<div class="layui-input-inline">
+				<input type="text" name="action" lay-verify="required" placeholder="请输入操作名称" class="layui-input" value="{$model['action']}" >
+			</div>
+		</div>
+
+		<div class="layui-form-item">
+			<label class="layui-form-label">状态</label>
+			<div class="layui-input-inline">
+		      <input type="radio" name="status" value="1" title="显示" checked="" <?php if($model['status'] == 1){echo 'selected';}?> >
+		      <input type="radio" name="status" value="0" title="不显示" <?php if($model['status'] == 0){echo 'selected';}?> >
+			</div>
+		</div>
+
+		<div class="layui-form-item">
+			<label class="layui-form-label">菜单图标</label>
+			<div class="layui-input-inline">
+				<input type="text" name="icon" placeholder="请输入菜单图标" class="layui-input"  value="{$model['icon']}" >
+			</div>
+		</div>
+
+		<div class="layui-form-item">
+			<label class="layui-form-label">备注</label>
+			<div class="layui-input-inline">
+				<input type="text" name="remark" placeholder="请输入备注" class="layui-input" value="{$model['remark']}" >
+			</div>
+		</div>
+
+		<div class="layui-form-item">
+			<label class="layui-form-label">排序ID</label>
+			<div class="layui-input-inline">
+				<input type="text" name="sort" placeholder="请输入排序ID" class="layui-input" value="{$model['sort']}" >
+			</div>
+		</div>
+
+		<div class="layui-form-item">
+			<div class="layui-input-block">
+				<input type="hidden" name="id" value="{$model['id']}">
+				<button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+				<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+			</div>
+		</div>
+			
+	</form>
+
+	<script type="text/javascript">
+		layui.use(['form','upload'], function(){
+	  		var form = layui.form();
+			form.on('submit(formDemo)', function(data){
+				return true;
+			});  
+		})
+
+		function preview_img(obj){
+			layer.photos({
+				photos: {
+					data:[{src:$(obj).parent().parent().find(".preview_img").val()}]
+				}
+				,anim: 5
+			});
+		}
+	</script>
+</div>
+
+
+		

@@ -1,0 +1,111 @@
+<style type="text/css">
+	.layui-form{padding: 10px;overflow: hidden;zoom: 1;}
+	.left-box{width: 68%;float: left;padding-right: 2%;}
+	.right-box{width: 30%;float: left;
+		margin-left: -2%;padding-left: 2%;}
+	.right-box .layui-form-item{padding-right: 10px;}
+	#LAY_demo_upload{max-width: 100%;
+		max-height: 160px;}
+	.layui-input-inline{z-index: 99999;}
+</style>
+<div class="boke-wrap">
+    <div class="layui-tab">
+        <ul class="layui-tab-title">
+            <li><a href='{:Url("index")}' >列表</a></li>
+            <li class="layui-this"><a href='javascript:;' >添加</a></li>
+        </ul>
+    </div>
+
+	<form class="layui-form" method="post">
+		<div class="left-box">
+            
+						<div class="layui-form-item">
+							<label class="layui-form-label">名字</label>
+							<div class="layui-input-inline">
+								<input type="text" name="name" placeholder="请输入名字" class="layui-input" >
+							</div>
+						</div>
+			
+						<div class="layui-form-item">
+							<label class="layui-form-label">关键字</label>
+							<div class="layui-input-inline">
+								<input type="text" name="keyword" placeholder="请输入关键字" class="layui-input" >
+							</div>
+						</div>
+			
+						<div class="layui-form-item">
+							<label class="layui-form-label">图片</label>
+							<div class="layui-input-inline">
+								<input type="text" name="image" placeholder="请输入图片" class="layui-input" >
+							</div>
+						</div>
+			
+						<div class="layui-form-item">
+							<label class="layui-form-label">类型</label>
+							<div class="layui-input-inline">
+								<input type="text" name="type" placeholder="请输入类型" class="layui-input" >
+							</div>
+						</div>
+			
+						<div class="layui-form-item">
+							<label class="layui-form-label">内容</label>
+							<div class="layui-input-inline">
+								<input type="text" name="content" placeholder="请输入内容" class="layui-input" >
+							</div>
+						</div>
+			
+						<div class="layui-form-item">
+							<label class="layui-form-label">创建时间</label>
+							<div class="layui-input-inline">
+								<input type="text" name="create_time" placeholder="请输入创建时间" class="layui-input" >
+							</div>
+						</div>
+			
+						<div class="layui-form-item">
+							<label class="layui-form-label">更新时间</label>
+							<div class="layui-input-inline">
+								<input type="text" name="update_time" placeholder="请输入更新时间" class="layui-input" >
+							</div>
+						</div>
+			
+						<div class="layui-form-item">
+							<label class="layui-form-label">状态</label>
+							<div class="layui-input-inline">
+								<input type="text" name="status" placeholder="请输入状态" class="layui-input" >
+							</div>
+						</div>
+			
+						<div class="layui-form-item">
+							<label class="layui-form-label"></label>
+							<div class="layui-input-inline">
+								<input type="text" name="banner_image" placeholder="请输入" class="layui-input" >
+							</div>
+						</div>
+			
+
+			<div class="layui-form-item">
+				<div class="layui-input-block">
+					<button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+					<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+				</div>
+			</div>
+		</div>
+		<div class="right-box">
+		</div>
+			
+	</form>
+
+	<script type="text/javascript">
+
+		layui.use(['form'], function(){
+	  		var form = layui.form();
+			form.on('submit(formDemo)', function(data){
+				return true;
+			});
+
+		})
+	</script>
+</div>
+
+
+		

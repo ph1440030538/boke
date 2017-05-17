@@ -1,0 +1,122 @@
+<style type="text/css">
+	body{background-color: #fff;}
+	.at-index{padding-top: 20px;padding-bottom: 100px;}
+	/*.layui-form-item{text-align: center;}*/
+	.strtotime-box{background-color: #efefef;padding: 8px 3px 2px;}
+	.form-group{padding: 10px 0px;}
+	.index_list{padding: 5px 0px;}
+	.index_list .layui-inline{max-width: 20%;}
+	.select_value{display: none;}
+	.layui-table{width: 80%;margin:0 auto;}
+</style>
+<script type="text/javascript" src="https://cdn.bootcss.com/vue/2.3.3/vue.min.js"></script>
+<div class="at-index" id="at-index">
+	<fieldset class="layui-elem-field layui-field-title">
+	 	<legend>生成【{$title}】功能({$tableName}表)</legend>
+	</fieldset>
+
+	<form class="layui-form" action="{:Url('admin/at/doing')}" method="post">
+		<div class="form-group">
+			<blockquote class="layui-elem-quote">
+				控制器，模块，验证
+			</blockquote>
+			<div class="layui-form-item strtotime-box">
+
+			  	<div class="layui-inline">
+				    <label class="layui-form-label">创建时间戳</label>
+				    <div class="layui-input-block">
+				    	<input type="text" class="layui-input" name="create_time" >
+				    </div>
+			  	</div>
+			  	<div class="layui-inline">
+				    <label class="layui-form-label">更新时间戳</label>
+				    <div class="layui-input-block">
+				    	<input type="text" class="layui-input" name="update_time">
+				    </div>
+			  	</div>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<blockquote class="layui-elem-quote">
+				页面
+			</blockquote>
+			<table class="layui-table" lay-even>
+				<thead>
+					<tr>
+						<th width="15%">字段</th>
+						<th width="25%">字段名字</th>
+						<th width="20%">字段类型</th>
+						<th width="30%">操作</th>
+					</tr> 
+				</thead>
+				<tbody>
+					{volist name="fields" id="field"}
+						<tr>
+							<td>
+							  	{$field.alias}
+							</td>
+							<td>
+							    <input type="text" class="layui-input" name="name[{$field.alias}]" value="{$field.name}">
+							</td>
+							<td>
+								<div class="layui-block">
+							    	<select name="type[{$field.alias}]"  lay-filter="type">
+										<option value="input">文本</option>
+										<option value="password">密码</option>
+										<option value="select">select</option>
+										<option value="image">图片</option>
+										<option value="editor">编辑器</option>
+							    	</select>
+								</div>
+								<div class="layui-block select_value">
+									<input type="text" name="default[{$field.alias}]" class="layui-input" placeholder="例如：0=>未审核,1=>通过,2=>不通过">
+								</div>
+							</td>
+							<td>
+								<div class="layui-inline">
+									<input type="checkbox" name="is_list[{$field.alias}]" lay-skin="primary" title="列表页" checked value="1">
+								</div>
+								<div class="layui-inline">
+									<input type="checkbox" name="is_edit[{$field.alias}]" lay-skin="primary" title="操作页" checked value="1">
+								</div>
+								<div class="layui-inline">
+									<input type="checkbox" name="notnull[{$field.alias}]" lay-skin="primary" title="必填" <?php if($field['notnull']){echo 'checked';}?> value="1">
+								</div>
+							</td>
+
+						</tr>
+					{/volist}
+				</tbody>
+			</table>
+		</div>
+
+		<div class="layui-form-item" style="text-align:center;">
+			<div class="layui-input-block">
+				<input type="hidden" name="tableName" value="{$tableName}">
+				<input type="hidden" class="layui-input" name="title" value="{$title}">
+				<button class="layui-btn" lay-submit lay-filter="formDemo">生成文件</button>
+			</div>
+		</div>
+		
+	</form>
+
+	<script type="text/javascript">
+		layui.use('form', function(){
+	  		var form = layui.form();
+
+			form.on('submit(*)', function(data){
+				return true; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+			});
+
+			form.on('select(type)', function(data){
+				if(data.value == 'select'){
+					$(this).parent().parent().parent().parent().find(".select_value").css("display","block");
+				}else{
+					$(this).parent().parent().parent().parent().find(".select_value").css("display","none");
+				}
+			});
+
+		})
+	</script>
+</div>

@@ -1,0 +1,64 @@
+<style type="text/css">
+	.layui-form{padding: 10px;overflow: hidden;zoom: 1;}
+	.left-box{width: 68%;float: left;padding-right: 2%;}
+	.right-box{width: 30%;float: left;
+		margin-left: -2%;padding-left: 2%;}
+	.right-box .layui-form-item{padding-right: 10px;}
+	#LAY_demo_upload{max-width: 100%;
+		max-height: 160px;}
+	.layui-input-inline{z-index: 99999;}
+</style>
+<div class="boke-wrap">
+    <div class="layui-tab">
+        <ul class="layui-tab-title">
+            <li><a href='{:Url("index")}' >【title】列表</a></li>
+            <li class="layui-this"><a href='javascript:;' >添加【title】</a></li>
+        </ul>
+    </div>
+
+	<form class="layui-form" method="post" action="{:Url('add')}">
+		<div class="left-box">
+            【html_item】
+
+			<div class="layui-form-item">
+				<div class="layui-input-block">
+					<button class="layui-btn" lay-submit lay-filter="ajaxForm">立即提交</button>
+					<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+				</div>
+			</div>
+		</div>
+	</form>
+
+	<script type="text/javascript">
+
+		layui.use(['form','layer'], function(){
+	  		var form = layui.form();
+			form.on('submit(ajaxForm)', function(data){
+				var that = this;
+				$(that).attr("disabled","disabled");
+				$.ajax({ 
+					type: "post", 
+					url: data.form.action, 
+					data: data.field,
+					dataType: 'json', 
+					success: function(result){ 
+						if(result['code'] == 1){
+							layer.msg(result['msg']);
+							window.setTimeout(function(){
+								window.location.href = document.referrer;
+							},800);
+							
+						}else{
+							layer.msg(result['msg']);
+							$(that).removeAttr("disabled");
+						}
+					} 
+				});
+				return false;
+			});
+		})
+	</script>
+</div>
+
+
+		
