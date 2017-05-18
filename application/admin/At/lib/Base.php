@@ -115,21 +115,39 @@ class Base{
 
 		$rules = "";
 		$messages = "";
+		$scene[] = "";
 		foreach ($this->fields as $key => $field) {
-			$rule = strpos($field['datatype'], 'int') !== false ? 'number':'max:'.$field['datalength'];
+			$fieldname = empty($field['name']) ?$field['alias']: $field['name'];
+			$rule = "";
+			if($field['notnull']){
+				$rule = "require|";
+				$messages .= empty($messages) ? "\t\t" : "\n\t\t";
+				$messages .= "'{$field['alias']}.require' => '{$fieldname}{$validate['require']}',";
+			}
+			$messages .= empty($messages) ? "\t\t" : "\n\t\t";
+			if(strpos($field['datatype'], 'int')!==false){
+				$rule .= 'number';
+				$messages .= "'{$field['alias']}.number' => '{$fieldname}{$validate['number']}',";
+			}else{
+				$rule .= 'max:'.$field['datalength'];
+				$messages .= "'{$field['alias']}.max' => '{$fieldname}{$validate['max']}',";
+			}
+			
 			$rules .= empty($rules) ? "\t\t" : "\n\t\t";
-			$rules .= "'{$field['alias']}' => '{$rule}'";
+			$rules .= "'{$field['alias']}' => '{$rule}',";
+
+			$scene[] = "'{$field['alias']}'";
 		}
 		$FileContent = $this->readFile("Validate.php");
 		$FileContent = str_replace("【rule】",$rules, $FileContent);
-
-
-		// var_dump($FileContent);die();
+		$FileContent = str_replace("【message】",$messages, $FileContent);
+		$FileContent = str_replace("【scene】", trim(implode(",",$scene),","), $FileContent);
+		
 		//替换
 		$FileContent = str_replace("【ControllerName】",$this->ControllerName, $FileContent);
 		//写入文件
 		$this->writeFile($FileContent, "M{$this->ControllerName}.php",'validate');
-				dump( $rules );die();
+				// dump( $rules );die();
 	}
 
 
@@ -240,7 +258,7 @@ class Base{
 			
 
 				if($action == 'edit'){
-					$option .= "<option value='{$vo['value']}' {if condition=\"\$model['【字段标识】'] == $key\"}selected{/if} >'{$vo['name']}</option>";
+					$option .= "<option value='{$vo['value']}' {if condition=\"\$model['【字段标识】'] == $key\"}selected{/if} >{$vo['name']}</option>";
 				}else{
 					$option .= "<option value='{$vo['value']}'>{$vo['name']}</option>";
 				}
@@ -270,7 +288,7 @@ class Base{
 					<input id="【字段标识】" type="text" name="【字段标识】" placeholder="请输入图片" class="layui-input preview_img" '.$edit_value.'>
 				</div>
 				<div class="layui-input-inline">
-					<input type="file" name="【字段标识】" lay-type="IMA" class="layui-upload-【字段标识】 layui-upload-file">
+					<input type="file" name="【字段标识】IMA" lay-type="IMA" class="layui-upload-【字段标识】 layui-upload-file">
 					<a href="javascript:;" class="layui-btn layui-btn-primary" onclick="preview_img(this)">预览</a>
 				</div>
 				<script type="text/javascript">

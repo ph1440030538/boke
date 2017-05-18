@@ -1,0 +1,227 @@
+<style type="text/css">
+	#tree-ul ul{}
+	#tree-ul li{padding: 2px 0px;cursor: pointer;}
+	#tree-ul .space{height: 5px;width: 25px;display: inline-block;}
+	.layui-form-item .layui-form-checkbox[lay-skin=primary]{margin-top: 0px;}
+	.layui-form-item .layui-form-checkbox{margin-top: 0px;}
+	.first-li{width: 300px;float: left;}
+	.tree-show{display: block;}
+	.tree-hide{display: none;}
+</style>
+<div class="boke-wrap">
+    <div class="layui-tab">
+        <ul class="layui-tab-title">
+            <li><a href='{:Url("index")}' >角色列表</a></li>
+            <li class="layui-this"><a href='javascript:;' >添加权限</a></li>
+        </ul>
+    </div>
+
+	<form class="layui-form" method="post" action="{:Url('add')}">
+
+		<div class="layui-form-item">
+			<div id="tree-ul">
+
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<div class="layui-input-block">
+				<button class="layui-btn" lay-submit lay-filter="ajaxForm">立即提交</button>
+				<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+			</div>
+		</div>
+	</form>
+
+	<script type="text/javascript">
+		layui.define('jquery', function(exports){
+			var $ = layui.jquery;
+
+			function Tree(){
+				this.elem = $("#tree-ul");
+				this.data = [ //节点
+					  {
+					    name: '常用文件夹'
+					    ,id: 1
+					    ,alias: 'changyong'
+					    ,children: [
+					      {
+					        name: '所有未读'
+					        ,id: 11
+					        ,href: 'http://www.layui.com/'
+					        ,alias: 'weidu'
+					      }, {
+					        name: '置顶邮件'
+					        ,id: 12
+					      }, {
+					        name: '标签邮件'
+					        ,id: 13
+					      }
+					    ]
+					  }, {
+					    name: '我的邮箱'
+					    ,id: 2
+					    ,spread: true
+					    ,children: [
+					      {
+					        name: 'QQ邮箱'
+					        ,id: 21
+					        ,spread: true
+					        ,children: [
+					          {
+					            name: '收件箱'
+					            ,id: 211
+					            ,children: [
+					              {
+					                name: '所有未读'
+					                ,id: 2111
+					              }, {
+					                name: '置顶邮件'
+					                ,id: 2112
+					              }, {
+					                name: '标签邮件'
+					                ,id: 2113
+					              }
+					            ]
+					          }, {
+					            name: '已发出的邮件'
+					            ,id: 212
+					          }, {
+					            name: '垃圾邮件'
+					            ,id: 213
+					          }
+					        ]
+					      }, {
+					        name: '阿里云邮'
+					        ,id: 22
+					        ,children: [
+					          {
+					            name: '收件箱'
+					            ,id: 221
+					          }, {
+					            name: '已发出的邮件'
+					            ,id: 222
+					          }, {
+					            name: '垃圾邮件'
+					            ,id: 223
+					          }
+					        ]
+					      }
+					    ]
+					  }
+					]      
+
+				this.arrow = ['&#xe623;', '&#xe625;'];
+
+				this.init = function(){
+					this.elem.html("");
+					this.tree(this.elem, this.data);
+				}
+
+				this.tree = function(elem,data, length = 0, spread = false,parentId = 0){
+					if(!data){
+						return;
+					}
+					var _this = this;
+					var ul = $("<ul "+(spread==false&&length!=0 ? "class='tree-hide'":"class='tree-show'")+" ></ul>");
+					var originLength = length + 1;
+					$(data).each(function(index, value){
+						var hasChild = value.children&&value.children.length > 0;
+						var li = $("<li "+(length == 0? "class=''":"")+">"
+							+ '<input class="checkbox" type="checkbox" lay-filter="check" lay-skin="primary" data-parentid=\''+parentId+'\' data-id=\''+value.id+'\' > '
+							+ "<span class='treename'>"
+							+ function(){
+								var space = "";
+								for (var i = 0; i < length; i++) {
+									space += "<span class='space'></span>";
+								}
+								return space
+							}()
+							+ function(){
+								if(hasChild){
+									return value.spread ? "<i class=\"layui-icon\">"+_this.arrow[1]+"</i>" : "<i class=\"layui-icon\">"+_this.arrow[0]+"</i>";
+								}
+								return "";
+							}()
+							+ "<span>"+value['name']+"</span>"
+							+ "</span>"
+							+ "</li>");
+						//存在子项
+						if(hasChild){
+							_this.tree(li, value.children, originLength, value.spread, value.id);
+						}
+						$(ul).append(li);
+
+						_this.treeclick(li);
+					});
+					$(elem).append(ul);
+				}
+
+				this.treeclick = function(elem){
+					var _this = this;
+					var open = function(event){
+						event.stopPropagation();
+						var arrow = elem.children('.layui-icon')
+						console.log( arrow );
+						if($(elem).attr('data-spread') == "true"){
+							$(elem).attr('data-spread',"false");
+							//关闭
+							$(elem).children("ul").show();
+							$(arrow).html(_this.arrow[1]);
+						}else{
+							$(elem).attr('data-spread',"true");
+							//展开
+							$(elem).children("ul").hide();
+							$(arrow).html(_this.arrow[0]);
+						}
+					}
+					$(elem.children(".treename")).on('click', open);
+
+
+
+					var select = function(){
+						alert();
+					}
+				}
+			}
+
+			var tree = new Tree();
+			tree.init();
+		});
+	</script>
+
+
+	<script type="text/javascript">
+		layui.use(['form'], function(){
+			var form = layui.form();
+			form.on('checkbox(check)', function(data){
+				var thatid = $(this).attr("data-id");
+				var flag = false;
+				var startParentId = 0;
+				var startParentFlag = true;
+				$(".checkbox").each(function(index, value){
+					var id = $(this).attr("data-id");
+					var parentid = $(this).attr("data-parentid");
+
+					if(thatid == id && flag == false){
+						flag = true;
+						startParentId = parentid;
+					}else if(flag == true){
+
+						if(startParentId == parentid){
+							startParentFlag = false;
+						}
+						if(startParentFlag){
+							$(this).attr("checked","checked");
+						}
+					}
+				});
+				form.render(); 
+			});
+
+			
+		});
+
+	</script>
+</div>
+
+
+		

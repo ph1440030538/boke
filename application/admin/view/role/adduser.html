@@ -1,5 +1,5 @@
 <style type="text/css">
-	.layui-form{padding: 20px 10px 50px;overflow: hidden;zoom: 1;}
+	.layui-form{padding: 10px;overflow: hidden;zoom: 1;}
 	.left-box{width: 68%;float: left;padding-right: 2%;}
 	.right-box{width: 30%;float: left;
 		margin-left: -2%;padding-left: 2%;}
@@ -11,30 +11,34 @@
 <div class="boke-wrap">
     <div class="layui-tab">
         <ul class="layui-tab-title">
-            <li><a href='{:Url("index")}' >【title】列表</a></li>
-            <li class="layui-this"><a href='javascript:;' >编辑【title】</a></li>
+            <li><a href='{:Url("index")}' >角色列表</a></li>
+            <li class="layui-this"><a href='javascript:;' >添加用户</a></li>
         </ul>
     </div>
 
-	<form class="layui-form" method="post" action="{:Url('edit')}">
+	<form class="layui-form" method="post" action="{:Url('add')}">
 		<div class="left-box">
-			【html_item】
+			<div class="layui-form-item">
+				<label class="layui-form-label">用户</label>
+				<div class="layui-input-block">
+					{volist name='users' id="user"}
+						<input type="checkbox" name="username[{$user.id}]" title="{$user.username}">
+					{/volist}
+				</div>
+			</div>
 
 			<div class="layui-form-item">
 				<div class="layui-input-block">
-					<input type="hidden" name="id" value="{$model.id}">
 					<button class="layui-btn" lay-submit lay-filter="ajaxForm">立即提交</button>
 					<button type="reset" class="layui-btn layui-btn-primary">重置</button>
 				</div>
 			</div>
 		</div>
-		<div class="right-box">
-		</div>
-			
 	</form>
 
 	<script type="text/javascript">
-		layui.use(['form'], function(){
+
+		layui.use(['form','layer'], function(){
 	  		var form = layui.form();
 			form.on('submit(ajaxForm)', function(data){
 				var that = this;
@@ -60,15 +64,6 @@
 				return false;
 			});
 		})
-
-		function preview_img(obj){
-			layer.photos({
-				photos: {
-					data:[{src:$(obj).parent().parent().find(".preview_img").val()}]
-				}
-				,anim: 5
-			});
-		}
 	</script>
 </div>
 

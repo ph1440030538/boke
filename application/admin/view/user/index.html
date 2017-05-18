@@ -14,7 +14,6 @@
 					<th>头像</th>
 					<th>用户名</th>
 					<th>密码</th>
-					<th></th>
                     <th width="10%">操作</th>
                 </tr> 
             </thead>
@@ -22,10 +21,9 @@
                 {volist name="list['data']" id="vo"}
                     <tr data-id="{$vo.id}">
                         <td><input type="checkbox" name="checkboxId[]" lay-skin="primary" value="{$vo.id}" ></td>
-						<td class='layui-elip'>{$vo.avatar}</td>
+						<td class='layui-elip'><img class='td_image' src="{$vo.avatar}" alt="{$vo.avatar}"  /></td>
 						<td class='layui-elip'>{$vo.username}</td>
 						<td class='layui-elip'>{$vo.password}</td>
-						<td class='layui-elip'>{$vo.status}</td>
                         <td>
                             <a class="layui-btn layui-btn-mini" href="{:Url('edit')}?id={$vo['id']}">编辑</a>
                             <a class="layui-btn layui-btn-mini layui-btn-danger" href="javascript:;" onclick="del({$vo.id})" >删除</a>

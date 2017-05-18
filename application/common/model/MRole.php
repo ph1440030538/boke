@@ -31,7 +31,9 @@ class MRole extends Model
 		if(!is_array($id)){
 			$id = [$id];
 		}
-
-		return self::save(['status'=>111], ["id","in",$id]);
+		return self::where("id","in",$id)->update([
+			'status' => 111,
+			'update_time' => time()
+		]);
 	}
 }

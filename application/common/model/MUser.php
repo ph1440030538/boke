@@ -7,7 +7,9 @@ class MUser extends Model
 {
     protected $pageSize = 15;
 	protected $table = "boke_user";
-	
+	protected $autoWriteTimestamp = true;
+	protected $createTime = 'create_time';
+	protected $updateTime = 'update_time';
 
 	public function getList($params, $page_str = 'page'){
 		$curPage = isset($params['page']) && $params['page'] > 1 ? $params['page'] :1;

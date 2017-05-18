@@ -20,10 +20,25 @@
 		<div class="left-box">
             
 			<div class="layui-form-item">
-				<label class="layui-form-label">头像</label>
-				<div class="layui-input-inline">
-					<input type="text" name="avatar" placeholder="请输入头像" class="layui-input" >
+				<label class="layui-form-label">图片</label>
+				<div class="layui-input-inline image_upload_box">
+					<input id="avatar" type="text" name="avatar" placeholder="请输入图片" class="layui-input preview_img" >
 				</div>
+				<div class="layui-input-inline">
+					<input type="file" name="avatarIMA" lay-type="IMA" class="layui-upload-avatar layui-upload-file">
+					<a href="javascript:;" class="layui-btn layui-btn-primary" onclick="preview_img(this)">预览</a>
+				</div>
+				<script type="text/javascript">
+					layui.use(["upload"],function(){
+						layui.upload({
+							url: "{:Url('upload/image')}"
+							,elem: ".layui-upload-avatar"
+							,success: function(res){
+								$("#avatar").val(res.data.src);
+							}
+						});  
+					});
+				</script>
 			</div>
 			
 			<div class="layui-form-item">
@@ -36,21 +51,14 @@
 			<div class="layui-form-item">
 				<label class="layui-form-label">密码</label>
 				<div class="layui-input-inline">
-					<input type="text" name="password" placeholder="请输入密码" class="layui-input" >
-				</div>
-			</div>
-			
-			<div class="layui-form-item">
-				<label class="layui-form-label"></label>
-				<div class="layui-input-inline">
-					<input type="text" name="status" placeholder="请输入" class="layui-input" >
+					<input type="password" name="password" placeholder="请输入密码" class="layui-input" >
 				</div>
 			</div>
 			
 
 			<div class="layui-form-item">
 				<div class="layui-input-block">
-					<button class="layui-btn" lay-submit lay-filter="form">立即提交</button>
+					<button class="layui-btn" lay-submit lay-filter="ajaxForm">立即提交</button>
 					<button type="reset" class="layui-btn layui-btn-primary">重置</button>
 				</div>
 			</div>
@@ -61,8 +69,9 @@
 
 		layui.use(['form','layer'], function(){
 	  		var form = layui.form();
-			form.on('submit(form)', function(data){
-				$(this).attr("disabled","disabled");
+			form.on('submit(ajaxForm)', function(data){
+				var that = this;
+				$(that).attr("disabled","disabled");
 				$.ajax({ 
 					type: "post", 
 					url: data.form.action, 
@@ -77,7 +86,7 @@
 							
 						}else{
 							layer.msg(result['msg']);
-							$(this).removeAttr("disabled");
+							$(that).removeAttr("disabled");
 						}
 					} 
 				});

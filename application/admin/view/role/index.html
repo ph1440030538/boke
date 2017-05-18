@@ -11,32 +11,27 @@
             <thead>
                 <tr>
                     <th width="3%"><input type="checkbox" name="" lay-skin="primary" lay-filter="allChoose"></th>
-                    
-<th>角色名称</th>
-<th>父角色ID</th>
-<th>排序字段</th>
-<th>备注</th>
-<th>创建时间</th>
-<th>更新时间</th>
-<th>状态</th>
-                    <th width="10%">操作</th>
+					<th>角色名称</th>
+					<th>备注</th>
+                    <th width="10%">排序字段</th>
+                    <th width="20%">操作</th>
                 </tr> 
             </thead>
             <tbody>
                 {volist name="list['data']" id="vo"}
                     <tr data-id="{$vo.id}">
                         <td><input type="checkbox" name="checkboxId[]" lay-skin="primary" value="{$vo.id}" ></td>
-                        
-<td class='layui-elip'>{$vo.name}</td>
-<td class='layui-elip'>{$vo.pid}</td>
-<td class='layui-elip'>{$vo.sort}</td>
-<td class='layui-elip'>{$vo.remark}</td>
-<td class='layui-elip'>{$vo.create_time}</td>
-<td class='layui-elip'>{$vo.update_time}</td>
-<td class='layui-elip'>{$vo.status}</td>
+						<td class='layui-elip'>{$vo.name}</td>
+                        <td class='layui-elip'>{$vo.remark}</td>
+						<td class='layui-elip'>{$vo.sort}</td>
                         <td>
-                            <a class="layui-btn layui-btn-mini" href="{:Url('edit')}?id={$vo['id']}">编辑</a>
-                            <a class="layui-btn layui-btn-mini layui-btn-danger" href="javascript:;" onclick="del({$vo.id})" >删除</a>
+                            <div class="layui-btn-group">
+                                <a class="layui-btn layui-btn-mini" href="{:Url('adduser')}?id={$vo['id']}">添加用户</a>
+                                <a class="layui-btn layui-btn-mini" href="{:Url('auth')}?id={$vo['id']}">添加权限</a>
+                                <a class="layui-btn layui-btn-mini" href="{:Url('edit')}?id={$vo['id']}">编辑</a>
+                                <a class="layui-btn layui-btn-mini layui-btn-danger" href="javascript:;" onclick="del({$vo.id})" >删除</a>
+                            </div>
+
                         </td>
                     </tr>
                 {/volist}
