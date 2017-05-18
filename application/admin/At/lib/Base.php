@@ -53,9 +53,6 @@ class Base{
 			}
 
 			preg_match('/(\w+)\((\d+)\)/i',$tableInfo[$field['name']]['type'],$match);
-			if(!isset($match[0])){
-				var_dump( $match );die();
-			}
 
 			$fields[$field['name']] = [
 				'alias' => $field['name'],
@@ -69,7 +66,7 @@ class Base{
 				'default' => $default,
 			];
 		}
-dump( $fields );die();
+
 		$this->fields = $fields;
 	}
 
@@ -116,13 +113,23 @@ dump( $fields );die();
 			"number" => "必须是数字",
 		];
 
-		dump( $this->fields );die();
+		$rules = "";
+		$messages = "";
+		foreach ($this->fields as $key => $field) {
+			$rule = strpos($field['datatype'], 'int') !== false ? 'number':'max:'.$field['datalength'];
+			$rules .= empty($rules) ? "\t\t" : "\n\t\t";
+			$rules .= "'{$field['alias']}' => '{$rule}'";
+		}
 		$FileContent = $this->readFile("Validate.php");
+		$FileContent = str_replace("【rule】",$rules, $FileContent);
+
+
 		// var_dump($FileContent);die();
 		//替换
 		$FileContent = str_replace("【ControllerName】",$this->ControllerName, $FileContent);
 		//写入文件
-		return $this->writeFile($FileContent, "M{$this->ControllerName}.php",'validate');
+		$this->writeFile($FileContent, "M{$this->ControllerName}.php",'validate');
+				dump( $rules );die();
 	}
 
 
