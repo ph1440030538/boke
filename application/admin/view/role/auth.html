@@ -16,7 +16,7 @@
         </ul>
     </div>
 
-	<form class="layui-form" method="post" action="{:Url('add')}">
+	<form class="layui-form" method="post" action="{:Url('auth')}">
 
 		<div class="layui-form-item">
 			<div id="tree-ul">
@@ -25,6 +25,7 @@
 		</div>
 		<div class="layui-form-item">
 			<div class="layui-input-block">
+				<input type="hidden" name="role_id" value="{$role_id}">
 				<button class="layui-btn" lay-submit lay-filter="ajaxForm">立即提交</button>
 				<button type="reset" class="layui-btn layui-btn-primary">重置</button>
 			</div>
@@ -37,77 +38,7 @@
 
 			function Tree(){
 				this.elem = $("#tree-ul");
-				this.data = [ //节点
-					  {
-					    name: '常用文件夹'
-					    ,id: 1
-					    ,alias: 'changyong'
-					    ,children: [
-					      {
-					        name: '所有未读'
-					        ,id: 11
-					        ,href: 'http://www.layui.com/'
-					        ,alias: 'weidu'
-					      }, {
-					        name: '置顶邮件'
-					        ,id: 12
-					      }, {
-					        name: '标签邮件'
-					        ,id: 13
-					      }
-					    ]
-					  }, {
-					    name: '我的邮箱'
-					    ,id: 2
-					    ,spread: true
-					    ,children: [
-					      {
-					        name: 'QQ邮箱'
-					        ,id: 21
-					        ,spread: true
-					        ,children: [
-					          {
-					            name: '收件箱'
-					            ,id: 211
-					            ,children: [
-					              {
-					                name: '所有未读'
-					                ,id: 2111
-					              }, {
-					                name: '置顶邮件'
-					                ,id: 2112
-					              }, {
-					                name: '标签邮件'
-					                ,id: 2113
-					              }
-					            ]
-					          }, {
-					            name: '已发出的邮件'
-					            ,id: 212
-					          }, {
-					            name: '垃圾邮件'
-					            ,id: 213
-					          }
-					        ]
-					      }, {
-					        name: '阿里云邮'
-					        ,id: 22
-					        ,children: [
-					          {
-					            name: '收件箱'
-					            ,id: 221
-					          }, {
-					            name: '已发出的邮件'
-					            ,id: 222
-					          }, {
-					            name: '垃圾邮件'
-					            ,id: 223
-					          }
-					        ]
-					      }
-					    ]
-					  }
-					]      
+				this.data = {$auth};  
 
 				this.arrow = ['&#xe623;', '&#xe625;'];
 
@@ -125,8 +56,10 @@
 					var originLength = length + 1;
 					$(data).each(function(index, value){
 						var hasChild = value.children&&value.children.length > 0;
-						var li = $("<li "+(length == 0? "class=''":"")+">"
-							+ '<input class="checkbox" type="checkbox" lay-filter="check" lay-skin="primary" data-parentid=\''+parentId+'\' data-id=\''+value.id+'\' > '
+						var li = $("<li "+(length == 0? "class=''":"")+" "+function(){
+								return (value.spread == undefined ||value.spread == false )? " data-spread=false ":" data-spread=true ";
+							}()+">"
+							+ '<input class="checkbox" name="id[]" type="checkbox" lay-filter="check"  data-checked=false lay-skin="primary" data-parentid=\''+parentId+'\' data-id=\''+value.id+'\' value="'+value.id+'" > '
 							+ "<span class='treename'>"
 							+ function(){
 								var space = "";
@@ -141,7 +74,7 @@
 								}
 								return "";
 							}()
-							+ "<span>"+value['name']+"</span>"
+							+ "<span>"+value['title']+"</span>"
 							+ "</span>"
 							+ "</li>");
 						//存在子项
@@ -159,27 +92,20 @@
 					var _this = this;
 					var open = function(event){
 						event.stopPropagation();
-						var arrow = elem.children('.layui-icon')
-						console.log( arrow );
-						if($(elem).attr('data-spread') == "true"){
-							$(elem).attr('data-spread',"false");
+						var arrow = elem.children('.layui-icon');
+						if($(elem).data("spread") == false){
+							$(elem).data("spread", true)
 							//关闭
 							$(elem).children("ul").show();
 							$(arrow).html(_this.arrow[1]);
 						}else{
-							$(elem).attr('data-spread',"true");
+							$(elem).data("spread", false)
 							//展开
 							$(elem).children("ul").hide();
 							$(arrow).html(_this.arrow[0]);
 						}
 					}
 					$(elem.children(".treename")).on('click', open);
-
-
-
-					var select = function(){
-						alert();
-					}
 				}
 			}
 
@@ -197,6 +123,21 @@
 				var flag = false;
 				var startParentId = 0;
 				var startParentFlag = true;
+				if($(this).data('checked') == false){
+					$(this).attr("checked",true);
+					$(this).data("checked",true);
+				}else{
+					$(this).removeAttr("checked");
+					$(this).data("checked",false);
+				}
+
+
+// console.log( $(this).prop('checked') );
+				if($(this).parent().children("ul").length == 0){
+					form.render(); 
+					return;
+				}
+
 				$(".checkbox").each(function(index, value){
 					var id = $(this).attr("data-id");
 					var parentid = $(this).attr("data-parentid");
@@ -210,11 +151,20 @@
 							startParentFlag = false;
 						}
 						if(startParentFlag){
-							$(this).attr("checked","checked");
+							// console.log(  );
+							if($(this).data('checked') == false){
+								$(this).attr("checked",true);
+								$(this).data("checked",true);
+							}else{
+								$(this).removeAttr("checked");
+								$(this).data("checked",false);
+							}
 						}
 					}
+
 				});
-				form.render(); 
+
+				form.render('checkbox'); 
 			});
 
 			

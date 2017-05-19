@@ -3,6 +3,7 @@ namespace app\admin\controller;
 use think\Request;
 use think\Db;
 use app\common\model\MRole;
+use app\common\model\MRolemenu;
 
 class Role extends Base
 {
@@ -69,6 +70,14 @@ class Role extends Base
 		}
 	}
 
+	//获取菜单
+	public function getMenu(){
+		$MRolemenu = new MRolemenu();
+		$data = $MRolemenu->getMenu();
+		return json($data);
+	}
+
+
 	//增加用户
 	public function adduser(){
 		$where = [
@@ -81,10 +90,26 @@ class Role extends Base
 
 	//增加用户
 	public function auth(){
-		
-		
-		
-		return view('auth',[ 'users' => [] ]);
+		if(Request::instance()->isPost()){
+			$data = Request::instance()->post();
+			$list = [];
+			foreach ($data['id'] as $key => $menu_id) {
+				$list[] = [
+					'role_id' => $data['role_id'],
+					'menu_id' => $menu_id,
+				];
+			}
+			Db::table("boke_role_access")->saveAll($list);
+			dump( $post );
+			die();
+		}else{
+			$id = Request::instance()->get('id/d');
+			$MRolemenu = new MRolemenu();
+			$auth = $MRolemenu->getMenu();
+
+			// var_dump( $auth );die();
+			return view('auth',[ 'auth' => json_encode($auth) ,'role_id'=>$id]);
+		}
 	}
 
 
