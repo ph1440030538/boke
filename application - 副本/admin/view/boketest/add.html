@@ -1,0 +1,134 @@
+<style type="text/css">
+	.layui-form{padding: 10px;overflow: hidden;zoom: 1;}
+	.left-box{width: 68%;float: left;padding-right: 2%;}
+	.right-box{width: 30%;float: left;
+		margin-left: -2%;padding-left: 2%;}
+	.right-box .layui-form-item{padding-right: 10px;}
+	#LAY_demo_upload{max-width: 100%;
+		max-height: 160px;}
+	.layui-input-inline{z-index: 99999;}
+</style>
+<div class="boke-wrap">
+    <div class="layui-tab">
+        <ul class="layui-tab-title">
+            <li><a href='{:Url("index")}' >测试列表</a></li>
+            <li class="layui-this"><a href='javascript:;' >添加测试</a></li>
+        </ul>
+    </div>
+
+	<form class="layui-form" method="post">
+		<div class="left-box">
+            
+					<div class="layui-form-item">
+						<label class="layui-form-label">名字</label>
+						<div class="layui-input-inline">
+							<input type="text" name="name" placeholder="请输入名字" class="layui-input" >
+						</div>
+					</div>
+		
+					<div class="layui-form-item">
+						<label class="layui-form-label">关键字</label>
+						<div class="layui-input-inline">
+							<input type="text" name="keyword" placeholder="请输入关键字" class="layui-input" >
+						</div>
+					</div>
+		
+					<div class="layui-form-item">
+						<label class="layui-form-label">图片</label>
+						<div class="layui-input-inline image_upload_box">
+							<input id="image" type="text" name="image" placeholder="请输入图片" class="layui-input preview_img" >
+						</div>
+						<div class="layui-input-inline">
+							<input type="file" name="image" lay-type="IMA" class="layui-upload-image layui-upload-file">
+							<a href="javascript:;" class="layui-btn layui-btn-primary" onclick="preview_img(this)">预览</a>
+						</div>
+						<script type="text/javascript">
+							layui.use(["upload"],function(){
+								layui.upload({
+									url: "{:Url('upload/image')}"
+									,elem: ".layui-upload-image"
+									,success: function(res){
+										$("#image").val(res.data.src);
+									}
+								});  
+							});
+						</script>
+					</div>
+		
+					<div class="layui-form-item">
+						<label class="layui-form-label">图片</label>
+						<div class="layui-input-inline image_upload_box">
+							<input id="banner_image" type="text" name="banner_image" placeholder="请输入图片" class="layui-input preview_img" >
+						</div>
+						<div class="layui-input-inline">
+							<input type="file" name="banner_image" lay-type="IMA" class="layui-upload-banner_image layui-upload-file">
+							<a href="javascript:;" class="layui-btn layui-btn-primary" onclick="preview_img(this)">预览</a>
+						</div>
+						<script type="text/javascript">
+							layui.use(["upload"],function(){
+								layui.upload({
+									url: "{:Url('upload/image')}"
+									,elem: ".layui-upload-banner_image"
+									,success: function(res){
+										$("#banner_image").val(res.data.src);
+									}
+								});  
+							});
+						</script>
+					</div>
+		
+		            <div class="layui-form-item">
+		            	<label class="layui-form-label">类型</label>
+		                <div class="layui-input-inline">
+		                    <select name="type">
+		                        <option value='1'>input</option><option value='2'>image</option><option value='3'>select</option>
+		                    </select>
+		                </div>
+		            </div>
+		
+					<div class="layui-form-item">
+						<label class="layui-form-label">内容</label>
+						<div class="layui-input-block">
+						    <link href="/static/umeditor/themes/default/css/umeditor.css" type="text/css" rel="stylesheet">
+						    <script type="text/javascript" src="/static/umeditor/third-party/jquery.min.js"></script>
+						    <script type="text/javascript" src="/static/umeditor/third-party/template.min.js"></script>
+						    <script type="text/javascript" charset="utf-8" src="/static/umeditor/umeditor.config.js"></script>
+						    <script type="text/javascript" charset="utf-8" src="/static/umeditor/umeditor.min.js"></script>
+						    <script type="text/javascript" src="/static/umeditor/lang/zh-cn/zh-cn.js"></script>
+
+							<script type="text/plain" id="myEditor" name="content" style="width:860px;height:240px;">
+							    <p></p>
+							</script>
+							<script type="text/javascript">
+							    var um = UM.getEditor("myEditor");
+							</script>
+						</div>
+					</div>
+		
+
+			<div class="layui-form-item">
+				<div class="layui-input-block">
+					<button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+					<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+				</div>
+			</div>
+		</div>
+		<div class="right-box">
+		</div>
+			
+	</form>
+
+	<script type="text/javascript">
+
+		layui.use(['form'], function(){
+	  		var form = layui.form();
+			form.on('submit(formDemo)', function(data){
+				return true;
+			});
+
+		})
+	</script>
+</div>
+
+
+		

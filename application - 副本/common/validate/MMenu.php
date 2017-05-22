@@ -2,7 +2,7 @@
 namespace app\common\validate;
 use think\Validate;
 
-class MRolemenu extends Validate
+class MMenu extends Validate
 {
 
 }

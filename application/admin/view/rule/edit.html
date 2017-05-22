@@ -1,0 +1,81 @@
+<style type="text/css">
+	.layui-form{padding: 10px;overflow: hidden;zoom: 1;}
+</style>
+<div class="boke-wrap">
+	<form class="layui-form" method="post">
+
+		<div class="layui-form-item">
+			<label class="layui-form-label">权限名字</label>
+			<div class="layui-input-inline">
+				<input type="text" name="rule_name" placeholder="请输入权限名字" class="layui-input" lay-verify="required"  value="{$model.rule_name}">
+			</div>
+		</div>
+
+		<div class="layui-form-item">
+			<label class="layui-form-label">权限规则</label>
+			<div class="layui-input-inline">
+				<input type="text" name="rule" placeholder="请输入权限规则" class="layui-input" lay-verify="required"  value="{$model.rule}">
+			</div>
+		</div>
+
+		<div class="layui-form-item">
+			<label class="layui-form-label">额外参数</label>
+			<div class="layui-input-inline">
+				<input type="text" name="params" placeholder="请输入额外参数" class="layui-input"  value="{$model.params}">
+				<span style="color: red">参数格式如：id=5&status=1</span>
+			</div>
+
+		</div>
+
+		<div class="layui-form-item">
+			<label class="layui-form-label">验证状态</label>
+			<div class="layui-input-inline">
+				<select name="isAccept" lay-verify="required">
+					<option value="1" <?php if($model['isAccept']==1){echo 'selected';}?> >通过</option>
+					<option value="0" <?php if($model['isAccept']==0){echo 'selected';}?> >不通过</option>
+				</select>
+			</div>
+		</div>
+
+		<div class="layui-form-item">
+			<div class="layui-input-block">
+				<input type="hidden" name="id" value="{$model.id}">
+				<button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+				<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+			</div>
+		</div>
+
+	</form>
+
+	<script type="text/javascript">
+
+		layui.use(['form'], function(){
+	  		var form = layui.form();
+			form.on('submit(formDemo)', function(data){
+				$.ajax({ 
+					type: "post", 
+					url: data.form.action, 
+					data: data.field,
+					dataType: 'json', 
+					success: function(result){ 
+						if(result['code'] == 1){
+							layer.msg(result['msg']);
+							parent.document.location.reload();
+							parent.layer.closeAll();
+
+						}else{
+							layer.msg(result['msg']);
+							$(that).removeAttr("disabled");
+						}
+					} 
+				});
+
+				return false;
+			});
+
+		})
+	</script>
+</div>
+
+
+		

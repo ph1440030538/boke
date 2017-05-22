@@ -1,0 +1,139 @@
+<div class="boke-wrap">
+    <div class="layui-tab">
+        <ul class="layui-tab-title">
+            <li><a href="{:Url('/admin/rule')}">权限规则</a></li>
+            <li class="layui-this"><a href="{:Url('/admin/rulegroup')}">权限组</a></li>
+            <li><a href="{:Url('/admin/ruleusergroup')}">角色</a></li>
+            <li><a id="add" href="javascript:;" >添加权限组</a></li>
+        </ul>
+    </div>
+
+
+
+    <div class="boke-table">
+        <table class="layui-table layui-form">
+            <thead>
+                <tr>
+                    <th width="20%">权限组名字</th>
+                    <th>权限</th>
+                    <th width="10%">操作</th>
+                </tr> 
+            </thead>
+            <tbody>
+                {volist name="list['data']" id="vo"}
+                    <tr data-id="{$vo.id}">
+                        <td>{$vo.group_name}</td>
+                        <td>
+                            {volist name="vo['rule']" id="it" key="k"}
+                                {if $k!=1}、{/if}
+                                {$it.rule_name}
+                                
+                            {/volist}
+                        </td>
+                        <td>
+                            <a class="layui-btn layui-btn-mini edit" data-id="{$vo.id}" href="javascript:;">编辑</a>
+                            <a class="layui-btn layui-btn-mini layui-btn-danger" href="javascript:;" onclick="del({$vo.id})" >删除</a>
+                        </td>
+                    </tr>
+                {/volist}
+            </tbody>
+        </table>
+
+        <div class="page">
+            <div id="page"></div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        layui.use(['laypage', 'layer','form'], function(){
+            var laypage = layui.laypage
+            ,layer = layui.layer;
+            laypage({
+                cont: 'page'
+                ,pages: {$list['pages']} //总页数
+                ,groups: 5 //连续显示分页数
+                ,curr: {$list['curPage']}
+                ,skip: true
+                ,jump: function(obj, first){
+                    if(!first){
+                        var url = window.location.href;
+                        if(url.indexOf("?")==-1){
+                            window.location.href = url+"?page="+obj.curr;
+                        }else{
+                            if(url.indexOf("page")==-1){
+                                window.location.href = url+"&page="+obj.curr;
+                            }else{
+                                window.location.href = url.replace(/page=\d*/, 'page='+obj.curr)
+                            }                                        
+                        }
+                    }                       
+                }
+            });
+            var form = layui.form();
+            //全选
+            form.on('checkbox(allChoose)', function(data){
+                var child = $(data.elem).parents('table').find('tbody input[type="checkbox"]');
+                child.each(function(index, item){
+                    item.checked = data.elem.checked;
+                });
+                form.render('checkbox');
+            });
+
+            $("#add").click(function(){
+              layer.open({
+                type: 2,
+                area:['580px','600px'],
+                content: "{:Url('add')}"
+              });
+            });
+
+            $(".edit").click(function(){
+                var id = $(this).attr("data-id");
+                layer.open({
+                    type: 2,
+                    area:['580px','600px'],
+                    content: "{:Url('edit')}?id="+id
+                });
+            });
+        });
+
+        function deleteAll(){
+            var ids = [];
+            $($("input[name='checkboxId[]']")).each(function(){
+                if( this.checked ){
+                    ids.push($(this).val());
+                }
+            });
+            del(ids);
+        }
+
+        function del(id){
+            layer.confirm('是否确定删除？', {
+                btn: ['是','否'] //按钮
+            }, function(){
+                $.ajax({
+                    type : 'post',
+                    url : "{:Url('deleteAll')}",
+                    data : {id:id},
+                    dataType: 'json',
+                    success: function(result){
+                        if(result['status'] == 200){
+                            if($.isArray(id)){
+                                $(id).each(function(index,value){
+                                    console.log(value);
+                                    $("tr[data-id="+value+"]").remove();
+                                });
+                            }else{
+                                $("tr[data-id="+id+"]").remove();
+                            }
+                            
+                            layer.closeAll();
+                        }else{
+                            layer.msg(result.msg);
+                        }
+                    }
+                });
+            });
+        }
+    </script>
+</div>

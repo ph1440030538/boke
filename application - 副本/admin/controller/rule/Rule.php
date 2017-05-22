@@ -1,14 +1,14 @@
 <?php
-namespace app\admin\controller;
+namespace app\admin\rule\controller;
 use think\Request;
-use app\common\model\MRolemenu;
+use app\common\model\MRule;
 
-class Rolemenu extends Base
+class Rule extends Admin
 {
 	private $Model;
 
 	public function __construct(){
-		$this->Model = new MRolemenu; 
+		$this->Model = new MRule; 
 		parent::__construct();
 	}
 
@@ -17,9 +17,9 @@ class Rolemenu extends Base
 
 		$list = $this->Model->getList(Request::instance()->get());
 
-		// var_dump( $list );die();
 		return view('index',[
 			'list' => $list,
+			'search' => Request::instance()->param()
 		]);
 	}
 
@@ -36,11 +36,7 @@ class Rolemenu extends Base
 			}
 			
 		}else{
-			//获取菜单
-			$id = Request::instance()->get('id/d');
-			$option = $this->Model->getOption($id);
-			// dump( $id  );die();
-			return view('add',['option'=>$option]);
+			return view('add');
 		}
 	}
 
@@ -60,9 +56,7 @@ class Rolemenu extends Base
 			$id = Request::instance()->get('id/d');
 			$model = $this->findOne($id);
 
-			//获取菜单
-			$option = $this->Model->getOption($model['parentid']);
-			return view('edit',[ 'model' => $model,'option'=>$option ]);
+			return view('edit',[ 'model' => $model ]);
 		}
 	}
 
@@ -77,6 +71,6 @@ class Rolemenu extends Base
 
 
 	public function findOne($id){
-		return MRolemenu::find()->where("id",$id)->find();
+		return MDemo::find()->where("id",$id)->find();
 	}
 }

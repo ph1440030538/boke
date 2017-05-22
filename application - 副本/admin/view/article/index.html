@@ -1,0 +1,156 @@
+<div class="boke-wrap">
+    <div class="layui-tab">
+        <ul class="layui-tab-title">
+            <li class="layui-this">文章列表</li>
+            <li><a href="{:Url('add')}">添加文章</a></li>
+        </ul>
+    </div>
+    
+    <div class="boke-search">
+        <form class="layui-form" action="">
+            <div class="layui-inline">
+                <div class="layui-input-inline">
+                    <select name="category_id">
+                        <option value="-1">全部</option>
+                        {$option}
+                    </select>
+                </div>
+            </div>
+
+            <div class="layui-inline">
+                <div class="layui-input-inline">
+                    <input type="text" name="title" placeholder="请输入名字" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-inline">
+                <div class="layui-input-inline">
+                    <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+                    <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="boke-table">
+        <table class="layui-table layui-form">
+            <thead>
+                <tr>
+                    <th width="3%"><input type="checkbox" name="" lay-skin="primary" lay-filter="allChoose"></th>
+                    <th width="10%">标题</th>
+                    <th width="10%">描述</th>
+                    <th width="10%">来源</th>
+                    <th width="10%">状态</th>
+                    <th width="10%">时间</th>
+                    <th width="10%">操作</th>
+                </tr> 
+            </thead>
+            <tbody>
+                {volist name="list['data']" id="vo"}
+                    <tr data-id="{$vo.id}">
+                        <td><input type="checkbox" name="checkboxId[]" lay-skin="primary" value="{$vo.id}" ></td>
+                        <td class='layui-elip'>{$vo.title}</td>
+                        <td class='layui-elip'>{$vo.describe}</td>
+                        <td class='layui-elip'>{$vo.source}</td>
+                        <td class='layui-elip'>显示</td>
+                       <td class='layui-elip'>
+                            展现时间：{$vo.create_time}<br/>
+                            更新时间：{$vo.update_time}<br/>
+                            创建时间：{$vo.create_time}
+                        </td>
+                        <td>
+                            <a class="layui-btn layui-btn-mini" href="{:Url('edit')}?id={$vo['id']}">编辑</a>
+                            <a class="layui-btn layui-btn-mini layui-btn-danger" href="javascript:;" onclick="del({$vo.id})" >删除</a>
+                        </td>
+                    </tr>
+                {/volist}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="10"><button onclick="deleteAll()" class="layui-btn layui-btn-small">删除</button></td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <div class="page">
+            <div id="page"></div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        layui.use(['laypage', 'layer','form'], function(){
+            var laypage = layui.laypage
+            ,layer = layui.layer;
+            laypage({
+                cont: 'page'
+                ,pages: {$list['pages']} //总页数
+                ,groups: 5 //连续显示分页数
+                ,curr: {$list['curPage']}
+                ,skip: true
+                ,jump: function(obj, first){
+                    if(!first){
+                        var url = window.location.href;
+                        if(url.indexOf("?")==-1){
+                            window.location.href = url+"?page="+obj.curr;
+                        }else{
+                            if(url.indexOf("page")==-1){
+                                window.location.href = url+"&page="+obj.curr;
+                            }else{
+                                window.location.href = url.replace(/page=\d*/, 'page='+obj.curr)
+                            }                                        
+                        }
+                    }                       
+                }
+            });
+            var form = layui.form();
+            //全选
+            form.on('checkbox(allChoose)', function(data){
+                var child = $(data.elem).parents('table').find('tbody input[type="checkbox"]');
+                child.each(function(index, item){
+                    item.checked = data.elem.checked;
+                });
+                form.render('checkbox');
+            });
+
+        });
+
+        function deleteAll(){
+            var ids = [];
+            $($("input[name='checkboxId[]']")).each(function(){
+                if( this.checked ){
+                    ids.push($(this).val());
+                }
+            });
+            del(ids);
+        }
+
+        function del(id){
+            layer.confirm('是否确定删除？', {
+                btn: ['是','否'] //按钮
+            }, function(){
+                $.ajax({
+                    type : 'post',
+                    url : "{:Url('deleteAll')}",
+                    data : {id:id},
+                    dataType: 'json',
+                    success: function(result){
+                        if(result['status'] == 200){
+                            if($.isArray(id)){
+                                $(id).each(function(index,value){
+                                    console.log(value);
+                                    $("tr[data-id="+value+"]").remove();
+                                });
+                            }else{
+                                $("tr[data-id="+id+"]").remove();
+                            }
+                            
+                            layer.closeAll();
+                        }else{
+                            layer.msg(result.msg);
+                        }
+                    }
+                });
+            });
+        }
+    </script>
+</div>

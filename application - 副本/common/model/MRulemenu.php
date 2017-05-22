@@ -4,11 +4,12 @@ namespace app\common\model;
 use think\Model;
 use think\Db;
 use think\Loader;
+use think\Session;
 use extend\Tree;
 
-class MRolemenu extends Model
+class MRulemenu extends Model
 {
-	protected $table = "boke_role_menu";
+	protected $table = "boke_rule_menu";
     protected $pageSize = 15;
 
     public function getAllData(){
@@ -16,7 +17,7 @@ class MRolemenu extends Model
 			'status'=>['neq',111]
 		];
 
-    	return Db::table("boke_role_menu")->field("parentid,id,name,sort")->where($where)->select();
+    	return Db::table("boke_rule_menu")->field("parentid,id,name,sort")->where($where)->select();
     }
 
     public function getList(){
@@ -41,13 +42,18 @@ class MRolemenu extends Model
 		return $treelist;
     }
 
-    public function getMenu(){
-		$where = [
-			'status'=>['neq',111]
-		];
+    public function getMenu($sqlData = []){
+    	if(empty($sqlData)){
+			$where = [
+				'status'=>['neq',111]
+			];
 
-    	$sqlData = Db::table("boke_role_menu")->field("parentid,id,name,sort,icon,app,model,action")->where($where)->order("sort asc")->select();
+	    	$sqlData = Db::table("boke_rule_menu")->field("parentid,id,name,sort,icon,app,model,action")->where($where)->order("sort asc")->select();
+    	}
+
+
     	$data = [];
+    	$roleHref = [];
     	foreach ($sqlData as $key => $vo) {
     		$data[] = [
     			'title' => $vo['name'],
@@ -56,7 +62,9 @@ class MRolemenu extends Model
     			'parentid' => $vo['parentid'],
     			'id' => $vo['id'],
     		];
+    		$roleHref[] = strtolower("/{$vo['app']}/{$vo['model']}/{$vo['action']}");
     	}
+    	Session::set('roleHref',$roleHref);
 
 		Loader::import('Tree',EXTEND_PATH);
 		$Tree = new Tree();
