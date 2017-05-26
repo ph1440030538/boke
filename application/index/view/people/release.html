@@ -1,0 +1,171 @@
+<style type="text/css">
+	.people-release{background: #fefefe;max-width: 800px;margin: 0 auto;overflow: hidden;}
+	.people-release form{padding: 20px;}
+	.image-item{height: 104px;overflow: hidden}
+	.image-box{overflow-x: auto;}
+	.image-box ul{overflow: hidden;zoom: 1;}
+	.image-box li{float: left;}
+	.grid{width: 100px;height: 100px;position: relative;}
+	.grid span{position: absolute;right: 5px;top: 0px;cursor:pointer;}
+	.upload_img{font-size: 32px;text-align: center;line-height: 100px;color:#666;position: relative;border: 1px solid #ddd;width: 98px;height: 98px;   }
+	.upload_img input{opacity: 0;position: absolute;left: 0px;top: 0px;width: 100%;height: 100%;z-index: 999;cursor:pointer;}
+	.img{width: 100px;height: 100px;}
+</style>
+<div class="people-release">
+	<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;"><legend>发布走失信息</legend></fieldset>
+	<form class="layui-form layui-form-pane" action="dorelease"  method="post">
+
+		<div class="layui-form-item">
+			<label class="layui-form-label">名字<span>(必填)</span></label>
+			<div class="layui-input-block">
+				<input type="text" name="name" required lay-verify="required" placeholder="请输入名字" class="layui-input">
+			</div>
+		</div>
+
+		<div class="layui-form-item image-item">
+			<div class="image-box">
+				<ul>
+					<li>
+						<div class="upload_img grid">
+							+
+							<input type="file" multiple="true" onchange="uploadImages(this)">
+						</div>
+					</li>
+				</ul>
+			</div>
+		</div>
+
+		<div class="layui-form-item">
+			<input type="radio" name="sex" value="1" title="男" checked>
+			<input type="radio" name="sex" value="2" title="女">
+		</div>
+
+		<div class="layui-form-item">
+			<label class="layui-form-label">出生年月</label>
+			<div class="layui-input-block">
+				<input class="layui-input" name="birthday" placeholder="出生年月" onclick="layui.laydate({elem: this, istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+			</div>
+		</div>
+
+		<div class="layui-form-item">
+			<label class="layui-form-label">身高</label>
+			<div class="layui-input-block">
+				<select name="height">
+					<option value="">身高</option>
+					<?php for($i=140,$j=190;$i<$j;$i++):?>
+						<option value="{$i}" {if $i == 170}selected{/if} >{$i}</option>
+					<?php endfor ?>
+				</select>
+			</div>
+		</div>
+
+		<div class="layui-form-item">
+			<label class="layui-form-label">走失日期</label>
+			<div class="layui-input-block">
+				<input class="layui-input" name="lost_date" placeholder="走失日期" onclick="layui.laydate({elem: this, istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+			</div>
+		</div>
+
+		<div class="layui-form-item" >
+			<textarea name="features" placeholder="特征(必填)" required lay-verify="required" class="layui-textarea"></textarea>
+		</div>
+
+		<div class="layui-form-item" >
+			<textarea name="address" placeholder="走失地点(必填)" required lay-verify="required" class="layui-textarea"></textarea>
+		</div>
+
+		<div class="layui-form-item">
+			<textarea name="event" placeholder="走失经过(必填)" required lay-verify="required" class="layui-textarea"></textarea>
+		</div>
+
+		<div class="layui-collapse">
+			<div class="layui-colla-item">
+				<h2 class="layui-colla-title">联系方式</h2>
+				<div class="layui-colla-content layui-show">
+					<div class="layui-form-item">
+						<input type="text" name="contact_name" required lay-verify="required" placeholder="联系人" autocomplete="off" class="layui-input">
+					</div>
+					<div class="layui-form-item">
+						<input type="text" name="contact_mobile" required lay-verify="required" placeholder="联系手机" class="layui-input">
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="layui-form-item">
+			<button class="layui-btn" lay-submit="" lay-filter="form">跳转式提交</button>
+		</div>
+	</form>
+	 
+	<script>
+		_init();
+		function _init(){
+			// console.log( $(".image-box ul li").length );
+			var width = $(".image-box ul li").length * 100;
+			$(".image-box ul").css("width", width+"px");
+		}
+		function delImage(obj){
+			$(obj).parent().parent().remove();
+		}
+
+		function uploadImages(fileList){
+		    $(fileList.files).each(function(index, file){
+		        $.getJSON('http://plugin.vipbcw.com/?m=site&c=qiniu&a=getQiniuToken&t=picture&callback=?', function(serverData){
+		            var formData = new FormData();
+		            formData.append('key', serverData.key);
+		            formData.append('token', serverData.token);
+		            formData.append('file', file);
+		    // console.log(file);
+		            $.ajax({
+		                url: serverData.action,
+		                type: 'POST',
+		                data: formData,
+		                processData: false,
+		                contentType: false,
+		                success: function(data){
+		                	var src = serverData.url+ data.key;
+		                	var ul = $(".image-box ul")
+		                	$(ul).children().eq(ul.length-1).before("<li><div class=\"grid\"><img class='img' src='"+src+"' /><span onclick='delImage(this)'>x</span></div><input type='hidden' name='images["+Math.round(Math.random() * 10000)+"]' value="+src+" /></li>");
+		                	_init();
+		                }
+		            });
+		            _init();
+		        });
+		    }); 
+		}
+
+	layui.use(['form','laydate','element','upload'], function(){
+		var form = layui.form();
+
+		//监听提交
+		form.on('submit(form)', function(data){
+			$.ajax({ 
+				type: "post", 
+				url: data.form.action, 
+				data: data.field,
+				dataType: 'json', 
+				success: function(result){ 
+					if(result['code'] == 1){
+						layer.msg(result['msg']);
+						window.setTimeout(function(){
+							window.location.href = document.referrer;
+						},800);
+						
+					}else{
+						layer.msg(result['msg']);
+						$(that).removeAttr("disabled");
+					}
+				} 
+			});
+			return false;
+		});
+		layui.upload({
+			url: '' //上传接口
+			,success: function(res){ //上传成功后的回调
+				console.log(res)
+			}
+		});
+
+	});
+	</script>
+</div>

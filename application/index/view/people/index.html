@@ -1,0 +1,45 @@
+<style type="text/css">
+	h1{font-size: 32px;text-align: center;}
+	article{background-color: #efefef;float: left;}
+	.wrap{overflow: hidden;zoom:1;max-width: 1180px;margin:0 auto;}
+	.resource-cover img{-webkit-animation:imgBig 1s;animation:imgBig 1s;width: 100%;height: 196px;}
+
+	@media screen and (max-width: 680px) {
+	    article{margin:1%;width: 46%;padding: 1%;}
+	}
+	@media screen and (min-width: 680px) and (max-width: 1180px) {
+	    article{margin:1%;width: 29.8%;padding: 0.6%;}
+	}
+	@media screen and (min-width: 1180px) {
+	    article{margin:0.3%;width: 18%;padding: 0.3%;}
+	}
+</style>
+<div class="people-index">
+	<div class="title">
+		<h1>找人告示</h1>	
+	</div>
+	<div class="wrap">
+		<a href="/index/people/release">发布找人</a>
+		<div class="box">
+			<?php foreach($list['data'] as $vo):?>
+				<?php 
+					$image = json_decode($vo['images']);
+					$image = empty($image) ? '':reset($image);
+				?>
+				<article>
+					<div class="resource-cover">
+						<a href="{:Url('/index/people/detail',['id'=>$vo['id']])}"><img src="{$image}"></a>
+					</div>
+					<div class="resource-title">
+						<h3>{$vo['name']}&nbsp;&nbsp;&nbsp;&nbsp;<?=$vo['sex'] ==1 ? '男':'女'?>&nbsp;&nbsp;&nbsp;&nbsp;{$vo['height']}cm</h3>
+						<p></p>
+					</div>
+					<div class="resource-button">
+					</div>
+				</article>
+			<?php endforeach?>
+		</div>
+
+	</div>
+
+</div>
