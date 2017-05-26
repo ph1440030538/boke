@@ -8,9 +8,10 @@ class Main extends Admin
     public function index()
     {
     	$this->view->engine->layout(false);
-
+// var_dump( Session::get("ruleMenu") );die();
         return view('index',[
-            'roleMenu'=>Session::get("ruleMenu")]);
+            'ruleMenu'=>Session::get("ruleMenu")
+        ]);
     }
 
     public function main(){

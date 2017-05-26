@@ -58,11 +58,11 @@ class MRulemenu extends Model
     		$data[] = [
     			'title' => $vo['name'],
     			'icon' => $vo['icon'],
-    			'href' => "/{$vo['app']}/{$vo['model']}/{$vo['action']}",
+    			'href' => "{$vo['url']}",
     			'parentid' => $vo['parentid'],
     			'id' => $vo['id'],
     		];
-    		$roleHref[] = strtolower("/{$vo['app']}/{$vo['model']}/{$vo['action']}");
+    		$roleHref[] = strtolower("{$vo['url']}");
     	}
     	Session::set('roleHref',$roleHref);
 

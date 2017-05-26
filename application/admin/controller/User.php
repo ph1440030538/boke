@@ -1,7 +1,12 @@
 <?php
 namespace app\admin\controller;
 use think\Request;
+use think\Db;
 use app\common\model\MUser;
+use app\common\model\MRuleusergroup;
+use app\common\model\MRuleUserMenu;
+use extend\Tree;
+use think\Loader;
 
 class User extends Admin
 {
@@ -69,8 +74,123 @@ class User extends Admin
 		}
 	}
 
+	//添加权限
+	public function rule(){
+		if(Request::instance()->isPost()){
+			$post = Request::instance()->post();
+			//要是用户的权限
+			$rule_user_group = Db::table('boke_rule_user_group')->where("uid", $post['uid'])->find();
+			if(empty($rule_user_group)){
+				$this->insertRule($post);
+			}else{
+				$post['id'] = $rule_user_group['id'];
+				$this->updateRule($post);
+			}
+
+			$this->success("成功！");
+		}else{
+			$uid = Request::instance()->get('uid');
+			//获取用户权限
+			$rule_user_group = Db::table('boke_rule_user_group')->where("uid", $uid)->find();
+
+			//获取权限列表
+			$rule_ids = empty($rule_user_group['rule_ids']) ? []: json_decode($rule_user_group['rule_ids']);
+			$rule = Db::table("boke_rule")->where(['status'=>['neq',111]])->select();
+			foreach ($rule as $key => $vo) {
+				$rule[$key]['selected'] = in_array($vo['id'], $rule_ids);
+			}
+
+			//获取权限组
+			$group_ids = empty($rule_user_group['group_ids']) ? []: json_decode($rule_user_group['group_ids']);
+			$rule_group = Db::table("boke_rule_group")->where(['status'=>['neq',111]])->select();
+			foreach ($rule_group as $key => $vo) {
+				$rule_group[$key]['selected'] = in_array($vo['id'], $group_ids);
+			}
+
+			// var_dump( $rule_group );die();
+			//获取角色
+			$user_group_ids = empty($rule_user_group['user_group_ids']) ? []: json_decode($rule_user_group['user_group_ids']);
+			$rule_user_group = Db::table("boke_rule_user_group")->where(['status'=>['neq',111],'uid'=>0])->select();
+			foreach ($rule_user_group as $key => $vo) {
+				$rule_user_group[$key]['selected'] = in_array($vo['id'], $user_group_ids);
+			}
+
+
+			return view('rule',[
+				'uid' => $uid,
+				'rule'=>json_encode( $rule ),
+				'rule_group'=> $rule_group,
+				'rule_user_group'=> $rule_user_group
+			]);			
+		}
+	}
+
+	//增加菜单
+	public function menu(){
+		if(Request::instance()->isPost()){
+			$post = Request::instance()->post();
+			$user_menu = Db::table('boke_rule_user_menu')->where("uid", $post['uid'])->find();
+
+			$menuIds = empty($post['menuIds']) ? '[]': json_encode($post['menuIds']);
+			// dump( $menuIds );die();
+			if(empty($user_menu)){
+				//不存在记录
+				(new MRuleUserMenu())->save([
+					'uid' => $post['uid'],
+					'menu_ids' => $menuIds,
+				]);
+			}else{
+				//更新记录
+				(new MRuleUserMenu())->save([
+					'menu_ids' => $menuIds,
+				],['id'=> $user_menu['id']]);
+			}
+			$this->success('成功');
+		}else{
+			$uid = Request::instance()->get('uid');
+			$rule_menu = Db::table('boke_rule_menu')->where(['status'=>['neq',111]])->select();
+			Loader::import('Tree',EXTEND_PATH);
+			$Tree = new Tree();
+			$Tree->init($rule_menu);
+			$treelist = $Tree->get_tree_list(0,'');
+			//获取用户菜单列表
+			$MRuleUserMenu = new MRuleUserMenu();
+			$userMenuIds = $MRuleUserMenu->getUserMenuIds($uid);
+			foreach ($treelist as $key => $vo) {
+				// dump($vo);die();
+				$treelist[$key]['selected'] = in_array($vo['id'], $userMenuIds);
+			}
+
+			return view('menu',[
+				'rule_menu' => $treelist,
+				'uid' => $uid,
+			]);			
+		}
+	}
+
 
 	public function findOne($id){
 		return MUser::find()->where("id",$id)->find();
+	}
+
+
+	public function insertRule($post){
+		return (new MRuleusergroup())->save([
+			'uid' => $post['uid'],
+			'user_group_ids' => empty($post['user_group_ids']) ? '[]' : json_encode(array_values($post['user_group_ids'])),
+			'group_ids' => empty($post['group_ids']) ? '[]' : json_encode(array_values($post['group_ids'])),
+			'rule_ids' => empty($post['rule_ids']) ? '[]' : json_encode(array_values($post['rule_ids'])),
+			'create_time' => time(),
+		]);
+	}
+
+	public function updateRule($post){
+		return (new MRuleusergroup())->save([
+			'uid' => $post['uid'],
+			'user_group_ids' => empty($post['user_group_ids']) ? '[]' : json_encode(array_values($post['user_group_ids'])),
+			'group_ids' => empty($post['group_ids']) ? '[]' : json_encode(array_values($post['group_ids'])),
+			'rule_ids' => empty($post['rule_ids']) ? '[]' : json_encode(array_values($post['rule_ids'])),
+			'create_time' => time(),
+		],['id' => $post['id']]);
 	}
 }

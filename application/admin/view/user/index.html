@@ -14,7 +14,7 @@
 					<th>头像</th>
 					<th>用户名</th>
 					<th>密码</th>
-                    <th width="10%">操作</th>
+                    <th width="20%">操作</th>
                 </tr> 
             </thead>
             <tbody>
@@ -25,8 +25,13 @@
 						<td class='layui-elip'>{$vo.username}</td>
 						<td class='layui-elip'>{$vo.password}</td>
                         <td>
-                            <a class="layui-btn layui-btn-mini" href="{:Url('edit')}?id={$vo['id']}">编辑</a>
-                            <a class="layui-btn layui-btn-mini layui-btn-danger" href="javascript:;" onclick="del({$vo.id})" >删除</a>
+                            <div class="layui-btn-group">
+                                <a class="layui-btn layui-btn-mini" href="{:Url('edit')}?id={$vo['id']}">编辑</a>
+                                <a class="layui-btn layui-btn-mini" href="javascript:;" onclick="rule({$vo['id']})" >权限</a>
+                                <a class="layui-btn layui-btn-mini" href="javascript:;" onclick="menu({$vo['id']})" >菜单</a>
+                                <a class="layui-btn layui-btn-mini layui-btn-danger" href="javascript:;" onclick="del({$vo.id})" >删除</a>
+                            </div>
+
                         </td>
                     </tr>
                 {/volist}
@@ -118,5 +123,22 @@
                 });
             });
         }
+
+        function rule(uid){
+            layer.open({
+                type: 2,
+                area:['800px','600px'],
+                content: "{:Url('rule')}?uid="+uid
+            });
+        }
+
+        function menu(uid){
+            layer.open({
+                type: 2,
+                area:['800px','600px'],
+                content: "{:Url('menu')}?uid="+uid
+            });
+        }
+
     </script>
 </div>

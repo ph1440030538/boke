@@ -9,9 +9,9 @@ class Admin extends Controller
 	public function __construct(){
 
 		$user = Session::get('user');
-		// if(!isset($user)){
-		// 	$this->redirect('admin/common/login');
-		// }
+		if(!isset($user)){
+			$this->redirect('admin/common/login');
+		}
 		
 		if($this->isCheck() == false){
 			exit( '---没有该权限---' );
@@ -65,13 +65,4 @@ class Admin extends Controller
 		}
 		return false;
 	}
-
-	/**
-	 * role 权限
-	 * @return [type] [description]
-	 */
-    public function logout(){
-        Session::set('user',null);
-        
-    }
 }

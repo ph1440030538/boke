@@ -77,6 +77,6 @@ class Rulemenu extends Admin
 
 
 	public function findOne($id){
-		return MRolemenu::find()->where("id",$id)->find();
+		return MRulemenu::find()->where("id",$id)->find();
 	}
 }

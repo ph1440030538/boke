@@ -1,0 +1,74 @@
+<style type="text/css">
+</style>
+<div class="boke-wrap">
+	<form class="layui-form" method="post">
+        <table class="layui-table layui-form">
+            <thead>
+                <tr>
+                    <th width="3%">
+                    	<input type="checkbox" name="" lay-skin="primary" lay-filter="allChoose">
+                    </th>
+					<th>菜单</th>
+					<th>url</th>
+					<th>额外参数</th>
+                </tr> 
+            </thead>
+            <tbody>
+            	{volist name="rule_menu" id="menu"}
+					<tr>
+						<td><input type="checkbox" name="menuIds[{$menu.id}]" lay-skin="primary" value="{$menu.id}" <?php if($menu['selected']){echo 'checked';}?> ></td>
+						<td>{$menu.name}</td>
+						<td>{$menu.url}</td>
+						<td>{$menu.data}</td>
+					</tr>
+            	{/volist}
+            </tbody>
+        </table>
+
+		<div class="layui-form-item">
+			<div class="layui-input-block">
+				<input type="hidden" name="uid" value="{$uid}">
+				<button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+				<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+			</div>
+		</div>
+	</form>
+
+	<script type="text/javascript">
+        layui.use(['form'], function(){
+        	var form = layui.form();
+            //全选
+            form.on('checkbox(allChoose)', function(data){
+                var child = $(data.elem).parents('table').find('tbody input[type="checkbox"]');
+                child.each(function(index, item){
+                    item.checked = data.elem.checked;
+                });
+                form.render('checkbox');
+            });
+
+			form.on('submit(formDemo)', function(data){
+				$.ajax({ 
+					type: "post", 
+					url: data.form.action, 
+					data: data.field,
+					dataType: 'json', 
+					success: function(result){ 
+						if(result['code'] == 1){
+							layer.msg(result['msg']);
+							parent.document.location.reload();
+							setTimeout(function(){
+								parent.layer.closeAll();
+							},600);
+							
+						}else{
+							layer.msg(result['msg']);
+							$(that).removeAttr("disabled");
+						}
+					} 
+				});
+
+				return false;
+			});
+        });
+	</script>
+</div>

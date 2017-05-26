@@ -6,6 +6,7 @@ use think\Cache;
 use think\Db;
 use app\common\model\MUser;
 use app\common\model\MRulemenu;
+use app\common\model\MRuleUserMenu;
 use think\Controller;
 
 class Common extends Controller
@@ -15,7 +16,9 @@ class Common extends Controller
 	public function __construct(){
 		$this->Model = new MUser(); 
 		$user = Session::get('user');
-		if(isset($user)){
+        $request = \think\Request::instance();
+        $action = $request->action();
+		if(isset($user)&&$action!='logout'){
 			$this->redirect('admin/Main/index');
 		}
 
@@ -40,22 +43,27 @@ class Common extends Controller
     	}
         //获取用户的权限
         $user = Session::get('user');
-        $userRole = Db::table("boke_role_user")->where("uid",$user['id'])->find();
-        $roleAccess = Db::table("boke_role_access")->where(['role_id'=>$userRole['role_id']])->select();
-        $roleAccess = empty($roleAccess) ? '-1' : array_column($roleAccess, "menu_id");
+        $MRuleUserMenu = new MRuleUserMenu();
+        $userMenuIds = $MRuleUserMenu->getUserMenuIds($user['id']);
+        // dump( $userMenuIds );die();
         $ruleMenu = Db::table("boke_rule_menu")->where([
             'status'=>['neq',111],
-            'id'=>['in', $roleAccess]
+            'id' => ['in', $userMenuIds]
         ])->select();
 
 
         $MRulemenu = new MRulemenu();
         $menu = $MRulemenu->getMenu($ruleMenu);
+        // dump( $menu );die();
         Session::set('ruleMenu',json_encode( $menu ));
-
         
 
     	return json(['status'=>200,'msg'=>'成功']);
     }
 
+
+    public function logout(){
+        session::clear();
+        $this->success('登出成功');
+    }
 }
