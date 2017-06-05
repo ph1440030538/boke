@@ -26,7 +26,9 @@ class MBokearticle extends Model
 		return [
 			'data' => $lists,
 			'pages' => ceil($total/$this->pageSize),
-			'curPage' => $curPage,
+      'curPage' => $curPage,
+      'totalRow' => $total,
+      'pageSize' => $this->pageSize
 		];
 	}
 

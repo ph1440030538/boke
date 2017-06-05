@@ -2,21 +2,25 @@
 namespace app\admin\controller;
 use think\Controller;
 use think\Session;
+use think\Db;
 use app\common\model\MRule;
 
 class Admin extends Controller
 {
 	public function __construct(){
-
+		
 		$user = Session::get('user');
 		if(!isset($user)){
 			$this->redirect('admin/common/login');
 		}
-		
-		if($this->isCheck() == false){
+		//获取后台配置的管理员id
+		$access_admin_id = Db::table('boke_setting')->where('setting_key','admin_id')->column('setting_value');
+		$access_admin_id = empty($access_admin_id[0]) ? [] : explode(",", $access_admin_id[0]);
+		Session::set('access_admin_id', $access_admin_id);
+		if($this->isCheck() == false&&!in_array($user['id'], $access_admin_id)){
 			exit( '---没有该权限---' );
 		}
-
+		
 		parent::__construct();
 	}
 

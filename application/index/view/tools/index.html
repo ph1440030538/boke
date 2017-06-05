@@ -1,4 +1,7 @@
+{extend name="base" /}
+{block name="head"}
 	<style>
+		.layui-btn{opacity: 1;}
 		body{background-color: #efefef;}
 		.strtotime-box{background-color: #fff;padding: 8px;}
 		.tools-title{font-size: 18px;padding-left: 13px;}
@@ -11,13 +14,15 @@
 		.json-box textarea{height: 200px;}
 		.json-box button{margin-top: 10px;}
 	</style>
+{/block}
+{block name="main"}
 <div class="boke-wrap tools-index">
 	<div class="strtotime-box">
 		<p class="tools-title">时间戳转换</p>
 		<label>当前Unix时间戳(支持10位和13位时间戳)</label>
 		<div class="tools-1">
 			<input class="date-1" type="text" placeholder="当前Unix时间戳" value="<?=time()?>" />
-			<button class="layui-btn layui-btn-primary" lay-submit lay-filter="formDemo" onclick="tostrtotime()">转换</button>
+			<button class="layui-btn layui-btn-primary" onclick="tostrtotime()">转换</button>
 			<input class="strtotime-1" type="text" name="" />
 		</div>
 		<label>北京时间转Unix</label>
@@ -67,3 +72,4 @@
 
 	}
 </script>
+{/block}

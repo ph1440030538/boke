@@ -28,11 +28,13 @@ class MRulegroup extends Model
 			];
 			$lists[$key]['rule'] = Db::table('boke_rule')->field("rule_name,id,rule")->where($where)->select();
 		}
-		// dump( $lists );die();
+		// dump( $pageSize );die();
 		return [
 			'data' => $lists,
 			'pages' => ceil($total/$this->pageSize),
 			'curPage' => $curPage,
+			'pageSize' => $this->pageSize,
+      'totalRow' => $total,
 		];
 	}
 

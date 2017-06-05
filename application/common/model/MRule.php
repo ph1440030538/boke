@@ -31,11 +31,12 @@ class MRule extends Model
 
         $total = self::where($where)->count();
         $lists = self::where($where)->page("{$curPage},{$this->pageSize}")->order("id desc")->select();
-        
         return [
             'data' => $lists,
             'pages' => ceil($total/$this->pageSize),
             'curPage' => $curPage,
+            'totalRow' => $total,
+            'pageSize' => $this->pageSize
         ];
     }
 
@@ -43,13 +44,12 @@ class MRule extends Model
      * 获取用户权限所有的节点
      */
     public function getRuleInfoByUid($uid){
-    	$RuleInfo = Cache::get('RuleInfo');
+    	$RuleInfo = Cache::get("RuleInfo_uid:{$uid}");
     	if(!empty($RuleInfo)){
     		return $RuleInfo;
     	}
 
     	//查询权限用户表
-    	$uuid = $uid;
     	$this->rule_user_group = Db::table("boke_rule_user_group")->where(['uid'=>$uid])->select();
     	foreach ($this->rule_user_group as $key => $rule_user_group) {
 	    	$user_group_ids = json_decode($rule_user_group['user_group_ids']);
@@ -65,8 +65,9 @@ class MRule extends Model
     	//查询权限组表
     	$group_ids = array_unique($this->group_ids);
     	$user_group_data = Db::table("boke_rule_group")->where([
-    		'id' => ['in', $group_ids]
+    		'id' => ['in', $group_ids],
     	])->select();
+        
     	foreach ($user_group_data as $key => $user_group) {
     		$this->rule_ids = array_merge($this->rule_ids, json_decode($user_group['rule_ids']));
     	}
@@ -97,7 +98,7 @@ class MRule extends Model
     		}
     	}
 
-    	Cache::set('RuleInfo',$rule);
+    	Cache::set("RuleInfo_uid:{$uid}",$rule);
     	return $rule;
     }
 

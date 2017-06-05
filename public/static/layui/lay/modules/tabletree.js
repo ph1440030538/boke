@@ -83,7 +83,7 @@ layui.define('jquery', function(exports){
   <div class="layui-btn-group">\
     <a class="layui-btn layui-btn-mini" href="add?id='+item.id+'" >添加子菜单</a>\
     <a class="layui-btn layui-btn-mini"  href="edit?id='+item.id+'" >编辑</a>\
-    <a class="layui-btn layui-btn-mini"  href="javascript:;" onclick="del('+item.id+')">删除</a>\
+    <a class="layui-btn layui-btn-mini"  href="javascript:;" onclick="del('+item.id+',this)">删除</a>\
   </div>'
       ].join(''));
       $(tr).append(td);

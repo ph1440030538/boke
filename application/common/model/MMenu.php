@@ -19,29 +19,27 @@ class MMenu extends Model
 			'status'=>['neq',111]
 		];
 
-    	return Db::table("boke_menu")->field("parent_id as parentid,id,name,create_time,sort,url")->where($where)->order("sort asc,id asc")->select();
+    	return Db::table("boke_menu")->field("parentid,id,name,create_time,sort,url,name as label")->where($where)->order("sort asc,id asc")->select();
     }
 
     public function getTreeArray(){
     	$data = $this->getAllData();
-		Loader::import('Tree',EXTEND_PATH);
-		$Tree = new Tree();
-		$Tree->init($data);
-		$treelist = $Tree->get_tree_array(0,'');
+			Loader::import('Tree',EXTEND_PATH);
+			$Tree = new Tree();
+			$Tree->init($data);
+			$treelist = $Tree->get_tree_array(0,'');
 
-		return $treelist;
+			return $treelist;
     	// dump( $treelist );die;
     }
 
     public function getList(){
     	$data = $this->getAllData();
-		Loader::import('Tree',EXTEND_PATH);
-		$Tree = new Tree();
-		$Tree->init($data);
-		$treelist = $Tree->get_tree_list(0);
-
-		return $treelist;
-    	// dump( $treelist );die;
+  		Loader::import('Tree',EXTEND_PATH);
+  		$Tree = new Tree();
+  		$Tree->init($data);
+  		$treelist = $Tree->getTreeData(0,'');
+		  return $treelist;
     }
 
     public function getOption($select_id = -1){

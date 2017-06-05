@@ -19,18 +19,17 @@ class MCategory extends Model
 			'status'=>['neq',111]
 		];
 
-    	return Db::table("boke_category")->field("parent_id as parentid,id,name,create_time,sort")->where($where)->select();
+    	return Db::table("boke_category")->field("parent_id as parentid,id,name,create_time,sort,name as label")->where($where)->select();
     }
 
 
     public function getList(){
     	$data = $this->getAllData();
-		Loader::import('Tree',EXTEND_PATH);
-		$Tree = new Tree();
-		$Tree->init($data);
-		$treelist = $Tree->get_tree_list(0);
-
-		return $treelist;
+  		Loader::import('Tree',EXTEND_PATH);
+  		$Tree = new Tree();
+  		$Tree->init($data);
+  		$treelist = $Tree->getTreeData(0,'');
+		  return $treelist;
     }
 
     public function get_child($id){

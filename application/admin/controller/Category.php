@@ -74,8 +74,12 @@ class Category extends Admin
 				$this->success("成功！");
 			}
 		}else{
-			$id = input('get.id');
-			$model = MCategory::find()->where("id",$id)->find()->toArray();
+			$id = Request::instance()->get('id/d',0);
+			$model = MCategory::find()->where("id",$id)->find();
+			if(empty($model)){
+				exit('不存在该记录！');
+			}
+			$model = $model->toArray();
 			$listTpl = $this->Model->getListTpl();
 			$pageTpl = $this->Model->getPageTpl();
 			$category = $this->Model->getList();

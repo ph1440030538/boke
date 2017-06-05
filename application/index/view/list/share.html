@@ -1,3 +1,5 @@
+{extend name="base" /}
+{block name="head"}
 <style type="text/css">	
 	*{padding: 0px;margin:0px;}
 	
@@ -30,7 +32,8 @@
 		to {width:100%;}
 	}
 </style>
-
+{/block}
+{block name="main"}
 <div class="share-page boke-wrap">
 	<div class="boke-title">
 		<span class="layui-breadcrumb">
@@ -92,3 +95,5 @@
         });
     });
 </script>
+
+{/block}

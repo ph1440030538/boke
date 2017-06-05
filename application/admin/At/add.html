@@ -1,12 +1,8 @@
 <style type="text/css">
 	.layui-form{padding: 20px 10px 50px;overflow: hidden;zoom: 1;}
-	.left-box{width: 68%;float: left;padding-right: 2%;}
-	.right-box{width: 30%;float: left;
-		margin-left: -2%;padding-left: 2%;}
-	.right-box .layui-form-item{padding-right: 10px;}
 	#LAY_demo_upload{max-width: 100%;
 		max-height: 160px;}
-	.layui-input-inline{z-index: 99999;}
+	.layui-unselect{z-index: 99999;}
 </style>
 <div class="boke-wrap">
     <div class="layui-tab">
@@ -17,14 +13,12 @@
     </div>
 
 	<form class="layui-form" method="post" action="{:Url('add')}">
-		<div class="left-box">
-            【html_item】
+        【html_item】
 
-			<div class="layui-form-item">
-				<div class="layui-input-block">
-					<button class="layui-btn" lay-submit lay-filter="ajaxForm">立即提交</button>
-					<button type="reset" class="layui-btn layui-btn-primary">重置</button>
-				</div>
+		<div class="layui-form-item">
+			<div class="layui-input-block">
+				<button class="layui-btn" lay-submit lay-filter="ajaxForm">立即提交</button>
+				<button type="reset" class="layui-btn layui-btn-primary">重置</button>
 			</div>
 		</div>
 	</form>

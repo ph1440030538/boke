@@ -120,7 +120,7 @@ return [
     // +----------------------------------------------------------------------
 
     'template'               => [
-        'layout_on'     =>  true,
+        'layout_on'     =>  false,
         'layout_name'   =>  'layout',
         // 模板引擎类型 支持 php think 支持扩展
         'type'         => 'Think',

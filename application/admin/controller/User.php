@@ -1,6 +1,7 @@
 <?php
 namespace app\admin\controller;
 use think\Request;
+use think\Cache;
 use think\Db;
 use app\common\model\MUser;
 use app\common\model\MRuleusergroup;
@@ -145,6 +146,8 @@ class User extends Admin
 					'menu_ids' => $menuIds,
 				],['id'=> $user_menu['id']]);
 			}
+			//清除用户菜单缓存
+			Cache::set("userMenu_uid:{$post['uid']}",'');
 			$this->success('成功');
 		}else{
 			$uid = Request::instance()->get('uid');

@@ -15,9 +15,9 @@ class Ruleusergroup extends Admin
 
 	/*首页*/
 	public function index(){
-
 		$list = $this->Model->getList(Request::instance()->get());
 
+		// die();
 		return view('index',[
 			'list' => $list,
 			'search' => Request::instance()->param()

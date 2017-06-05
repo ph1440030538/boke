@@ -17,7 +17,6 @@ class At extends Admin
 	}
 
 	public function index(){
-
 		return view('index');
 	}
 
@@ -25,11 +24,11 @@ class At extends Admin
 		$post = Request::instance()->post();
 		try {
 			//获取表的结构
-			$tableInfo = $this->At->getTableInfo($post['tableName']);
+			$tableInfo = $this->At->getTableInfo($post['at_table']);
 		} catch (\Exception $e) {
 			dump( "表不存在！" );die();
 		}
- // dump( $tableInfo );die();
+// dump( $tableInfo );die();
 		$fields = [];
 		foreach ($tableInfo as $key => $vo) {
 			if($vo['autoinc']){
@@ -41,12 +40,17 @@ class At extends Admin
 				'notnull' => $vo['notnull'],
 			];
 		}
+
+		//检查文件是否存在
+		$this->At->setControllerName($post['at_table']);
+		$files = $this->At->checkFilesExist();
 		// dump( $post );die();
 		// 
 		return view("create",[
 			'fields' => $fields,
-			'tableName' => $post['tableName'],
-			'title' => $post['title'],
+			'at_table' => $post['at_table'],
+			'at_name' => $post['at_name'],
+			'files' => $files
 		]);
 	}
 
@@ -54,34 +58,31 @@ class At extends Admin
 	public function createFile(){
 		$post = Request::instance()->post();
 		Session::set("fileData", $post);
-		$post['typeFile'] = 00;
-		switch ($post['typeFile']) {
-			case 'createModel':
-				$this->At->setData($post);
-				$this->At->isFileExist();
-				break;
-			default:
-				$this->At->setData($post);
-				$this->At->setField($post);
-				break;
-		}
+		$this->At->setData($post);
 		
-		// var_dump( $file );die();
-		return view("create-file", [
-			'file' => $file
-		]);
+
+		// dump( $post );die();
+		// return view("create-file",[
+		// 	'files' => $files
+		// ]);
 	}
 
 	public function startCreate(){
+		$filename = Request::instance()->post("filename");
 		$fileData = Session::get("fileData");
-		switch ($fileData['typeFile']) {
-			case 'createModel':
-				$this->At->setData($fileData);
-				$this->doCreateModel();
-				$this->success("成功");
-				break;
-			default:
+		$this->At->setData($fileData);
+
+		if($filename == 'all'){
+			$this->At->createFile('controller');
+			$this->At->createFile('model');
+			$this->At->createFile('validate');
+			$this->At->createFile('index');
+			$this->At->createFile('add');
+			$this->At->createFile('edit');
+		}else{
+			$this->At->createFile($filename);
 		}
+		$this->success("生成成功！");
 	}
 
 	public function createInit(){

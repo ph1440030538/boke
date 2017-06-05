@@ -10,7 +10,7 @@
 // +----------------------------------------------------------------------
 use think\Route;
 
-Route::rule('category/:id','index/category/index');
+// Route::rule('category/:id','index/category/index');
 
 return [
     '__pattern__' => [

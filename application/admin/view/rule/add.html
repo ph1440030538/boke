@@ -1,6 +1,10 @@
+{extend name="base" /}
+{block name="head"}
 <style type="text/css">
-	.layui-form{padding: 10px;overflow: hidden;zoom: 1;}
+	.layui-form{padding: 10px;}
 </style>
+{/block}
+{block name="main"}
 <div class="boke-wrap">
 	<form class="layui-form" method="post">
 
@@ -49,7 +53,7 @@
 	<script type="text/javascript">
 
 		layui.use(['form'], function(){
-	  		var form = layui.form();
+	  	var $ = layui.jquery,form = layui.form();
 			form.on('submit(formDemo)', function(data){
 				$.ajax({ 
 					type: "post", 
@@ -58,11 +62,11 @@
 					dataType: 'json', 
 					success: function(result){ 
 						if(result['code'] == 1){
-							layer.msg(result['msg']);
+							parent.document.location.reload();
 							parent.layer.closeAll();
+							parent.layer.msg(result['msg']);
 						}else{
 							layer.msg(result['msg']);
-							$(that).removeAttr("disabled");
 						}
 					} 
 				});
@@ -73,6 +77,9 @@
 		})
 	</script>
 </div>
+{/block}
+
+
 
 
 		

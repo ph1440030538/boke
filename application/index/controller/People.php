@@ -18,7 +18,7 @@ class People extends Controller
 
 		// var_dump( $list );die();
 		return view("index",[
-			'list' => $list
+			'list' => $list,
 		]);
 	}
 
@@ -29,7 +29,7 @@ class People extends Controller
     	$lostProple['images'] = json_decode($lostProple['images']);
     	// var_dump( $lostProple );die();
         return view("detail",[
-        	'lostProple' => $lostProple
+        	'lostProple' => $lostProple,
         ]);
     }
 

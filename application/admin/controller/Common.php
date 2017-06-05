@@ -41,23 +41,6 @@ class Common extends Controller
     	if($this->Model->isCheckLogin($post) ===false){
     		return json(['status'=>400,'msg'=>'密码或账号错误']);
     	}
-        //获取用户的权限
-        $user = Session::get('user');
-        $MRuleUserMenu = new MRuleUserMenu();
-        $userMenuIds = $MRuleUserMenu->getUserMenuIds($user['id']);
-        // dump( $userMenuIds );die();
-        $ruleMenu = Db::table("boke_rule_menu")->where([
-            'status'=>['neq',111],
-            'id' => ['in', $userMenuIds]
-        ])->select();
-
-
-        $MRulemenu = new MRulemenu();
-        $menu = $MRulemenu->getMenu($ruleMenu);
-        // dump( $menu );die();
-        Session::set('ruleMenu',json_encode( $menu ));
-        
-
     	return json(['status'=>200,'msg'=>'成功']);
     }
 

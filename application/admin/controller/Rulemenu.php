@@ -27,6 +27,7 @@ class Rulemenu extends Admin
 	public function add(){
 		if(Request::instance()->isPost()){
 			$post = Request::instance()->post();
+			// var_dump( $post );die();
 			$result = $this->Model->validate(true)->save($post);
 
 			if(false === $result){
@@ -39,7 +40,7 @@ class Rulemenu extends Admin
 			//获取菜单
 			$id = Request::instance()->get('id/d');
 			$option = $this->Model->getOption($id);
-			// dump( $id  );die();
+
 			return view('add',['option'=>$option]);
 		}
 	}

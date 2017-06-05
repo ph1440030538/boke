@@ -423,5 +423,45 @@ class Tree {
         return(strpos(',,' . $list . ',', ',' . $item . ','));
     }
 
+    public function getTreeData($myid, $str) {
+        $retarray = array();
+        //一级栏目数组
+        $child = $this->get_child($myid);
+        if (is_array($child)) {
+            //数组长度
+            $total = count($child);
+            foreach ($child as $id => $value) {
+                @extract($value);
+                $value["children"] = $this->getTreeData($id, '');
+                $retarray[] = $value;
+            }
+        }
+        return $retarray;
+    }
+
+    public function getElOption($myid, $adds='') {
+        $number = 1;
+        //一级栏目
+        $child = $this->get_child($myid);
+        if (is_array($child)) {
+            $total = count($child);
+            foreach ($child as $id => $value) {
+                $j = $k = '';
+                if ($number == $total) {
+                    $j .= $this->icon[2];
+                } else {
+                    $j .= $this->icon[1];
+                }
+                $spacer = $adds ? $adds . $j : '';
+                
+                $value['label'] = $spacer.$value['label'];
+                $this->ret[] = $value;
+                $nbsp = "    ";
+                $this->getElOption($value['id'], $adds . $k . $nbsp);
+                $number++;
+            }
+        }
+        return $this->ret;
+    }
 }
 

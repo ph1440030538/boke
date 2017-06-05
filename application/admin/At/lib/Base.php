@@ -11,8 +11,9 @@ class Base{
 	protected $fields = [];
 	protected $create_time = "";
 	protected $update_time = "";
+	protected $isAutoTime;
 
-	protected $fileSaveDir = [
+	protected $fileSavePath = [
 		"controller" => "../application/admin/controller/",
 		"model" => "../application/common/model/",
 		"validate" => "../application/common/validate/",
@@ -22,20 +23,37 @@ class Base{
 	public function __construct(){
 	}
 
+	//设置数据
 	public function setData($post){
 		$this->create_time = isset($post['create_time']) ? $post['create_time'] : '';
 		$this->update_time = isset($post['update_time']) ? $post['update_time'] : '';
-		// var_dump( $post );die();
 
-		$this->ControllerName = ucfirst( str_replace(Config::get('database.prefix'), '', $post['tableName']) );
+		//控制器名字
+		$this->ControllerName = ucfirst( str_replace(Config::get('database.prefix'), '', $post['at_table']) );
 		$this->ControllerName = str_replace("_", "", $this->ControllerName);
-		$this->title = isset($post['title']) ? $post['title'] : '';
-		$this->tableName = isset($post['tableName']) ? $post['tableName'] : '';
+		//功能名字
+		$this->title = isset($post['at_name']) ? $post['at_name'] : '';
+		//表名
+		$this->tableName = isset($post['at_table']) ? $post['at_table'] : '';
+
+		$this->setField($post);
+
+		//是否时间戳
+		$this->isAutoTime = isset($post['open_time']);
+	}
+
+	//获取文件列表
+	public function getFileList(){
+		
+	}
+
+	public function setControllerName($at_table){
+		$this->ControllerName = ucfirst( str_replace(Config::get('database.prefix'), '', $at_table) );
 	}
 
 
 	public function setField($post){
-		$tableInfo = $this->getTableInfo($post['tableName']);
+		$tableInfo = $this->getTableInfo($post['at_table']);
 		foreach ($tableInfo as $key => $field) {
 			if($field['autoinc']){
 				continue;
@@ -52,17 +70,16 @@ class Base{
 						'name' => $data['1']
 					];
 				}
-				// dump( $default );die();
 			}
 
 			preg_match('/(\w+)\((\d+)\)/i',$tableInfo[$field['name']]['type'],$match);
-
+// dump( $field['name']);dump( $match );
 			$fields[$field['name']] = [
 				'alias' => $field['name'],
 				'name' => $post['name'][$field['name']],
 				'type' => $post['type'][$field['name']],
-				'datatype' => $match[1],
-				'datalength' => $match[2],
+				'datatype' => empty($match[1]) ? '':$match[1],
+				'datalength' => empty($match[2]) ? '':$match[2],
 				'notnull' => isset($post['notnull'][$field['name']])&& $post['notnull'][$field['name']] == 1? 1:0,
 				'is_list' => isset($post['is_list'][$field['name']])&& $post['is_list'][$field['name']] == 1? 1:0,
 				'is_edit' => isset($post['is_edit'][$field['name']])&& $post['is_edit'][$field['name']] == 1? 1:0,
@@ -74,35 +91,99 @@ class Base{
 
 	}
 
-	//判断文件是否存在
-	public function isFileExist(){
-		$isExist = file_exists($this->fileSaveDir['model']."M{$this->ControllerName}.php");
+	//预览文件
+	public function previewFile($fileType){
+		$action = "\$FileContent = \$this->get".ucfirst($fileType)."File();";
+		// dump( $action );die();
+		eval($action);
+		return $FileContent;
+	}
+
+	//生成文件
+	public function createFile($fileType){
+
+		if(!in_array($fileType , ['controller','model','validate','add','edit','index'])){
+			exit('找不到类型');
+		}else{
+			$FileContent = $this->previewFile($fileType);
+
+			switch ($fileType) {
+				case 'controller':
+					$path = $this->fileSavePath['controller'];
+					$this->checkPath($path);
+					return file_put_contents($path."{$this->ControllerName}.php", $FileContent);
+					break;
+				case 'model':
+					$path = $this->fileSavePath['model'];
+					$this->checkPath($path);
+					return file_put_contents($path."M{$this->ControllerName}.php", $FileContent);
+					break;
+				case 'validate':
+					$path = $this->fileSavePath['validate'];
+					$this->checkPath($path);
+					return file_put_contents($path."M{$this->ControllerName}.php", $FileContent);
+					break;
+				case 'index':
+					$path = $this->fileSavePath['html'].strtolower($this->ControllerName)."/";
+					$this->checkPath($path);
+					return file_put_contents($path."index.html", $FileContent);
+					break;
+				case 'add':
+					$path = $this->fileSavePath['html'].strtolower($this->ControllerName)."/";
+					$this->checkPath($path);
+					return file_put_contents($path."add.html", $FileContent);
+					break;
+				case 'edit':
+					$path = $this->fileSavePath['html'].strtolower($this->ControllerName)."/";
+					$this->checkPath($path);
+					return file_put_contents($path."edit.html", $FileContent);
+					break;
+			}
+		}
+		return false;
+	}
+
+
+	public function checkFilesExist(){
 
 		return [
-			'model' => [
-				'isExist' => $isExist,
-				'file' => $this->fileSaveDir['model']."M{$this->ControllerName}.php"
-			]
+			'controller' => $this->checkFileExist($this->fileSavePath['controller'].$this->ControllerName.".php"),
+			'model' => $this->checkFileExist($this->fileSavePath['model']."M".$this->ControllerName.".php"),
+			'validate' => $this->checkFileExist($this->fileSavePath['validate']."M".$this->ControllerName.".php"),
+			'add' => $this->checkFileExist($this->fileSavePath['html'].strtolower($this->ControllerName)."/add.html"),
+			'edit' => $this->checkFileExist($this->fileSavePath['html'].strtolower($this->ControllerName)."/edit.html"),
+			'index' => $this->checkFileExist($this->fileSavePath['html'].strtolower($this->ControllerName)."/index.html"),
+		];
+	}
+
+	//判断文件是否存在
+	public function checkFileExist($file){
+		$isExist = file_exists($file);
+
+		return [
+			'isExist' => $isExist,
+			'filename' => $file
 		];
 	}
 
 
 	/*创建控制器文件*/
-	public function doCreateController(){
+	public function getControllerFile(){
 		$FileContent = $this->readFile("Controller.php");
+
 		//替换
 		$FileContent = str_replace("【ControllerName】",$this->ControllerName, $FileContent);
+
 		//写入文件
-		return $this->writeFile($FileContent, "{$this->ControllerName}.php",'controller');
+		return $FileContent;
 	}
 
 	/*创建Model文件*/
-	public function doCreateModel(){
+	public function getModelFile(){
 		$FileContent = $this->readFile("Model.php");
-		$isAutoTime = empty($this->create_time)&&empty($this->update_time);
-		// var_dump( $isAutoTime );die();
+
 		//替换自动时间戳
-		if(!$isAutoTime){
+		if($this->isAutoTime){
 			$FileContent = str_replace("【autoWriteTimestamp】",
 				"protected \$autoWriteTimestamp = true;".
 				"\n\tprotected \$createTime = '{$this->create_time}';".
@@ -118,14 +199,14 @@ class Base{
 		$FileContent = str_replace("【ControllerName】",$this->ControllerName, $FileContent);
 		$FileContent = str_replace("【tableName】",$this->tableName, $FileContent);
 		//写入文件
-		return $this->writeFile($FileContent, "M{$this->ControllerName}.php",'model');
+		return $FileContent;
 	}
 
 	/*创建Validate文件*/
-	public function doCreateValidate(){
+	public function getValidateFile(){
 		$validate = [
 			"require" => "必须",
-			"max" => "最多不能超过25个字符",
+			"max" => "最多不能超过【length】个字符",
 			"number" => "必须是数字",
 		];
 
@@ -133,6 +214,9 @@ class Base{
 		$messages = "";
 		$scene[] = "";
 		foreach ($this->fields as $key => $field) {
+			if(!$field['datatype']){
+				continue;
+			}
 			$fieldname = empty($field['name']) ?$field['alias']: $field['name'];
 			$rule = "";
 			if($field['notnull']){
@@ -146,7 +230,7 @@ class Base{
 				$messages .= "'{$field['alias']}.number' => '{$fieldname}{$validate['number']}',";
 			}else{
 				$rule .= 'max:'.$field['datalength'];
-				$messages .= "'{$field['alias']}.max' => '{$fieldname}{$validate['max']}',";
+				$messages .= "'{$field['alias']}.max' => '{$fieldname}".str_replace("【length】",$field['datalength'], $validate['max'])."',";
 			}
 			
 			$rules .= empty($rules) ? "\t\t" : "\n\t\t";
@@ -162,13 +246,12 @@ class Base{
 		//替换
 		$FileContent = str_replace("【ControllerName】",$this->ControllerName, $FileContent);
 		//写入文件
-		$this->writeFile($FileContent, "M{$this->ControllerName}.php",'validate');
-				// dump( $rules );die();
+		return $FileContent;
 	}
 
 
 
-	public function doCreateIndexHtml(){
+	public function getIndexFile(){
 		$FileContent = $this->readFile("index.html");
 		$th_str = "";
 		$td_str = "";
@@ -184,6 +267,13 @@ class Base{
 					$td_str .= "<td class='layui-elip'>{\$vo.".$alias."}</td>";
 				}else if($field['type'] == 'image'){
 					$td_str .= "<td class='layui-elip'><img class='td_image' src=\"{\$vo.{$alias}}\" alt=\"{\$vo.{$alias}}\"  /></td>";
+				}else if($field['type'] == 'select'){
+					$array_str = "[";
+					foreach ($field['default'] as $key => $vo) {
+						$array_str .= "'{$vo['value']}'=>'{$vo['name']}',";
+					}
+					$array_str .= "]";
+					$td_str .= "<td class='layui-elip'><?php \$array = {$array_str}; echo isset(\$array[\$vo['type']]) ? \$array[\$vo['type']]:'未知'; ?></td>";
 				}
 				
 			}
@@ -193,10 +283,10 @@ class Base{
 		$FileContent = str_replace("【td_str】",$td_str, $FileContent);
 		$FileContent = str_replace("【title】",$this->title, $FileContent);
 
-		return $this->writeFile($FileContent, "index.html",'html');
+		return $FileContent;
 	}
 
-	public function doCreateAddHtml(){
+	public function getAddFile(){
 		$FileContent = $this->readFile("add.html");
 		$html_item = '';
 		// dump( $this->fields );die();
@@ -210,10 +300,10 @@ class Base{
 		$FileContent = str_replace("【html_item】",$html_item, $FileContent);
 		$FileContent = str_replace("【title】",$this->title, $FileContent);
 
-		return $this->writeFile($FileContent, "add.html",'html');
+		return $FileContent;
 	}
 
-	public function doCreateEditHtml(){
+	public function getEditFile(){
 		$FileContent = $this->readFile("edit.html");
 		$FileContent = str_replace("【title】",$this->title, $FileContent);
 		$html_item = '';
@@ -226,7 +316,7 @@ class Base{
 		}
 		
 		$FileContent = str_replace("【html_item】",$html_item, $FileContent);
-		return $this->writeFile($FileContent, "edit.html",'html');
+		return $FileContent;
 	}
 
 	/*创建增加编辑的表单*/
@@ -299,9 +389,9 @@ class Base{
 			case 'image':
 			$html = '
 			<div class="layui-form-item">
-				<label class="layui-form-label">图片</label>
+				<label class="layui-form-label">【字段名字】</label>
 				<div class="layui-input-inline image_upload_box">
-					<input id="【字段标识】" type="text" name="【字段标识】" placeholder="请输入图片" class="layui-input preview_img" '.$edit_value.'>
+					<input id="【字段标识】" type="text" name="【字段标识】" placeholder="请输入【字段名字】" class="layui-input preview_img" '.$edit_value.'>
 				</div>
 				<div class="layui-input-inline">
 					<input type="file" name="【字段标识】IMA" lay-type="IMA" class="layui-upload-【字段标识】 layui-upload-file">
@@ -381,29 +471,14 @@ class Base{
 
 	public function readFile($fileName){
 		$FileContent = file_get_contents("../application/admin/At/{$fileName}");
-
 		return $FileContent;
 	}
 
-	public function writeFile($FileContent, $fileName, $type){
-		if(!array_key_exists($type, $this->fileSaveDir)){
-			die("保存的类型不存在");
-		}
-
-		//创建生成文件的目录
-		if($type == 'html'){
-	        if (!file_exists($this->fileSaveDir[$type].strtolower($this->ControllerName))){
-	            mkdir ($this->fileSaveDir[$type].strtolower($this->ControllerName),0777,true);
-	        }
-
-	        return file_put_contents($this->fileSaveDir[$type].strtolower($this->ControllerName)."/".$fileName, $FileContent);
-		}else{
-	        if (!file_exists($this->fileSaveDir[$type])){
-	            mkdir ($this->fileSaveDir[$type],0777,true);
-	        }
-	        return file_put_contents($this->fileSaveDir[$type].$fileName, $FileContent);
-		}
+	//检查目录是否存在
+	public function checkPath($path){
+        if (!file_exists($path)){
+            mkdir($path,0777,true); 
+        }
 	}
-
 
 }

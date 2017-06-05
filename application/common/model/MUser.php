@@ -24,6 +24,8 @@ class MUser extends Model
 			'data' => $lists,
 			'pages' => ceil($total/$this->pageSize),
 			'curPage' => $curPage,
+			'pageSize' => $this->pageSize,
+      'totalRow' => $total,
 		];
 	}
 

@@ -61,17 +61,15 @@ class Menu extends Admin
 			$id = Request::instance()->get('id/d');
 			$model = $this->findOne($id);
 			// var_dump( $model['parent_id'] );die();
-			$option = $this->Model->getOption($model['parent_id']);
+			$option = $this->Model->getOption($model['parentid']);
 			
 			return view('edit',[ 'model' => $model,'option'=>$option ]);
 		}
 	}
 
-	//删除
-	public function delete(){
-		$id = (int)input('post.id',0);
-		$result = Db::table('boke_category')->where('id', $id)->update(['update_time' => time(),'status'=>111]);
-		if($result == 1){
+	/*删除*/
+	public function deleteAll(){
+		if($this->Model->deleteAll($_POST['id']) > 0){
 			return json(['status'=>200,'msg'=>'成功']);
 		}else{
 			return json(['status'=>400,'msg'=>'失败']);
