@@ -49,14 +49,15 @@
 				form = layui.form();
 				
 			form.on('submit(formDemo)',function(data){
-				// $.post("{:Url('dologin')}",data.field,function(res){
-				// 	if(res.status == 200){
-				// 		window.location.href = "{:Url('login')}";
-				// 	}else{
-				// 		layer.msg(res.msg);
-				// 	}
-				// });
-				return true;
+				$.post("{:Url('dologin')}",data.field,function(res){
+					if(res.status == 200){
+						window.location.href = "{:Url('login')}";
+            layer.msg("登录成功！");
+					}else{
+						layer.msg(res.msg);
+					}
+				});
+				return false;
 			});
 		});
 	</script>

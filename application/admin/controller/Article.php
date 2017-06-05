@@ -23,7 +23,8 @@ class Article extends Admin
 	public function index(){
 		$list = $this->Model->getList(Request::instance()->get());
 
-		$option = $this->MCategory->getOption();
+		$select_id = Request::instance()->get('category_id/d',0);
+		$option = $this->MCategory->getOption($select_id);
 		return view('index',[
 			'list' => $list,
 			'option' => $option
