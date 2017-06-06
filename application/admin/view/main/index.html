@@ -33,9 +33,11 @@
           <template slot="title">我的</template>
           <el-menu-item index="2-1">个人设置</el-menu-item>
           <el-menu-item index="2-2">站点设置</el-menu-item>
-          <el-menu-item index="2-3">退出</el-menu-item>
+          <el-menu-item index="2" v-on:click="exit()">
+          退出
+          </el-menu-item>
         </el-submenu>
-        <el-menu-item index="2">
+        <el-menu-item index="2" v-on:click="flush()">
           <a href="javascript:;">清除缓存</a>
         </el-menu-item>
         <el-menu-item index="2">
@@ -97,6 +99,13 @@ var Main = {
 
     },
     methods: {
+      exit(){
+        window.location.href="{:Url('Common/logout')}"
+      },
+      flush(){
+        // layer.msg('清楚缓存成功');
+      },
+
       handleSkipUrl(url,name,id){
         this.main_src = url;
         var is_add = false;
@@ -123,7 +132,6 @@ var Main = {
             this.main_src = this.tags[key - 1].url;
           }
         }
-        console.log(this.tags[key]);
         this.tags.splice(key, 1);
       },
       tagClick(tag){

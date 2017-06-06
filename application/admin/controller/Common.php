@@ -47,6 +47,6 @@ class Common extends Controller
 
     public function logout(){
         session::clear();
-        $this->success('登出成功');
+        $this->success('退出成功');
     }
 }
