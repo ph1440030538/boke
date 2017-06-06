@@ -20,8 +20,11 @@ class M【ControllerName】 extends Model
 		
 		return [
 			'data' => $lists,
-			'pages' => ceil($total/$this->pageSize),
-			'curPage' => $curPage,
+			'page' => [
+				'pageSize' => $this->pageSize,
+				'total' => $total,
+				'curPage' => $curPage
+			]
 		];
 	}
 

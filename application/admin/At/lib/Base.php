@@ -261,8 +261,8 @@ class Base{
 				$name = $field['name'];
 				$alias = $field['alias'];
 
-				$th_str .= $th_str == "" ? "\t\t\t\t\t<th>{$name}</th>" : "\n\t\t\t\t\t<th>{$name}</th>";
-				$td_str .= $td_str == "" ? "\t\t\t\t\t\t" : "\n\t\t\t\t\t\t";
+				$th_str .= $th_str == "" ? "\t\t\t\t\t\t<th>{$name}</th>" : "\n\t\t\t\t\t\t<th>{$name}</th>";
+				$td_str .= $td_str == "" ? "\t\t\t\t\t\t\t" : "\n\t\t\t\t\t\t\t";
 				if($field['type'] == 'input'||$field['type'] == 'password'){
 					$td_str .= "<td class='layui-elip'>{\$vo.".$alias."}</td>";
 				}else if($field['type'] == 'image'){
@@ -426,9 +426,7 @@ class Base{
 				    <script type="text/javascript" charset="utf-8" src="/static/umeditor/umeditor.min.js"></script>
 				    <script type="text/javascript" src="/static/umeditor/lang/zh-cn/zh-cn.js"></script>
 
-					<script type="text/plain" id="myEditor" name="【字段标识】" style="width:860px;height:240px;">
-					    <p>'.($action == 'edit'? "{\$model['【字段标识】']}":"").'</p>
-					</script>
+					<script type="text/plain" id="myEditor" name="【字段标识】" style="width:860px;height:240px;">'.($action == 'edit'? "{\$model['【字段标识】']}":"").'</script>
 					<script type="text/javascript">
 					    var um = UM.getEditor("myEditor");
 					</script>

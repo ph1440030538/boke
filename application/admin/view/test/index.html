@@ -1,126 +1,86 @@
-<div class="boke-wrap">
-    <div class="layui-tab">
-        <ul class="layui-tab-title">
-            <li class="layui-this">测试列表</li>
-            <li><a href="{:Url('add')}">添加测试</a></li>
-        </ul>
+{extend name="base" /}
+{block name="head"}
+{/block}
+{block name="main"}
+<div id="fuyun-app" class="fuyun-app">
+  <div class="content-box">
+    <div class="fuyun-title">
+      <h5>测试列表</h5>
+      <a href="{:Url('add')}" class="layui-btn fuyun-add-btn layui-btn-small layui-btn-normal add"><i class="fa fa-plus-square margin-right-5"></i>添加测试</a>
+    </div>
+    <div class="main-box">
+      <table class="layui-table layui-form">
+        <thead>
+          <tr>
+            <th width="3%"><input type="checkbox" name="" lay-skin="primary" lay-filter="allChoose"></th>
+						<th>名字</th>
+						<th>关键字</th>
+						<th>图片</th>
+						<th>类型</th>
+						<th>内容</th>
+						<th>banner图片</th>
+            <th>操作</th>
+          </tr> 
+        </thead>
+        <tbody>
+          {volist name="list['data']" id="vo"}
+            <tr data-id="{$vo.id}">
+              <td><input type="checkbox" name="id[]" lay-skin="primary" value="{$vo.id}" ></td>
+							<td class='layui-elip'>{$vo.name}</td>
+							<td class='layui-elip'>{$vo.keyword}</td>
+							<td class='layui-elip'>{$vo.image}</td>
+							<td class='layui-elip'>{$vo.type}</td>
+							<td class='layui-elip'>{$vo.content}</td>
+							<td class='layui-elip'>{$vo.banner_image}</td>
+              <td>
+                <div class="layui-btn-group">
+                  <a class="layui-btn layui-btn-normal layui-btn-small" href="{:Url('edit')}?id={$vo['id']}">编辑</a>
+                  <button class="layui-btn fuyun-btn-del layui-btn-small btn-del-id" data-url="{:Url('deleteAll')}" data-confirm="确定删除该分类吗？" data-successtip="删除成功！" data-id="<?=$vo['id']?>" ><i class="fa fa-close margin-right-5"></i>删除</button>
+                </div>
+              </td>
+            </tr>
+          {/volist}
+        </tbody>
+        <tfoot>
+          <tr>
+            <th width="2%"><input type="checkbox" name="" lay-skin="primary" lay-filter="allChoose"></th>
+            <th colspan="8" class="operator-button" style="text-align:left">
+                <button class="layui-btn layui-btn-small fuyun-btn-del btn-del-ids" data-url="{:Url('deleteAll')}" data-confirm="确定要批量删除吗?" data-successtip="批量删除成功!"  method-type="post" style="margin-top:5px"><i class="fa fa-close margin-right-5"></i>批量删除</button>
+            </th>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+    <div class="page-box">
+      <fuyun-page 
+        :pagesize="<?=$list['page']['pageSize']?>" 
+        :total = "<?=$list['page']['total']?>"
+        :current-page = "{$list['page']['curPage']}"
+      ></fuyun-page>
     </div>
 
-    <div class="boke-table">
-        <table class="layui-table layui-form">
-            <thead>
-                <tr>
-                    <th width="3%"><input type="checkbox" name="" lay-skin="primary" lay-filter="allChoose"></th>
-					<th>名字</th>
-					<th>关键字</th>
-					<th>图片</th>
-					<th>类型</th>
-					<th>banner图片</th>
-                    <th width="10%">操作</th>
-                </tr> 
-            </thead>
-            <tbody>
-                {volist name="list['data']" id="vo"}
-                    <tr data-id="{$vo.id}">
-                        <td><input type="checkbox" name="checkboxId[]" lay-skin="primary" value="{$vo.id}" ></td>
-						<td class='layui-elip'>{$vo.name}</td>
-						<td class='layui-elip'>{$vo.keyword}</td>
-						<td class='layui-elip'><img class='td_image' src="{$vo.image}" alt="{$vo.image}"  /></td>
-						<td class='layui-elip'><?php $array = ['0'=>'input','1'=>'select','2'=>'image','3'=>'edit',]; echo isset($array[$vo['type']]) ? $array[$vo['type']]:'未知'; ?></td>
-						<td class='layui-elip'><img class='td_image' src="{$vo.banner_image}" alt="{$vo.banner_image}"  /></td>
-                        <td>
-                            <a class="layui-btn layui-btn-mini" href="{:Url('edit')}?id={$vo['id']}">编辑</a>
-                            <a class="layui-btn layui-btn-mini layui-btn-danger" href="javascript:;" onclick="del({$vo.id})" >删除</a>
-                        </td>
-                    </tr>
-                {/volist}
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td colspan="10"><button onclick="deleteAll()" class="layui-btn layui-btn-small">删除</button></td>
-                </tr>
-            </tfoot>
-        </table>
-
-        <div class="page">
-            <div id="page"></div>
-        </div>
-    </div>
-
-    <script type="text/javascript">
-        layui.use(['laypage', 'layer','form'], function(){
-            var laypage = layui.laypage
-            ,layer = layui.layer;
-            laypage({
-                cont: 'page'
-                ,pages: {$list['pages']} //总页数
-                ,groups: 5 //连续显示分页数
-                ,curr: {$list['curPage']}
-                ,skip: true
-                ,jump: function(obj, first){
-                    if(!first){
-                        var url = window.location.href;
-                        if(url.indexOf("?")==-1){
-                            window.location.href = url+"?page="+obj.curr;
-                        }else{
-                            if(url.indexOf("page")==-1){
-                                window.location.href = url+"&page="+obj.curr;
-                            }else{
-                                window.location.href = url.replace(/page=\d*/, 'page='+obj.curr)
-                            }                                        
-                        }
-                    }                       
-                }
-            });
-            var form = layui.form();
-            //全选
-            form.on('checkbox(allChoose)', function(data){
-                var child = $(data.elem).parents('table').find('tbody input[type="checkbox"]');
-                child.each(function(index, item){
-                    item.checked = data.elem.checked;
-                });
-                form.render('checkbox');
-            });
-
-        });
-
-        function deleteAll(){
-            var ids = [];
-            $($("input[name='checkboxId[]']")).each(function(){
-                if( this.checked ){
-                    ids.push($(this).val());
-                }
-            });
-            del(ids);
-        }
-
-        function del(id){
-            layer.confirm('是否确定删除？', {
-                btn: ['是','否'] //按钮
-            }, function(){
-                $.ajax({
-                    type : 'post',
-                    url : "{:Url('deleteAll')}",
-                    data : {id:id},
-                    dataType: 'json',
-                    success: function(result){
-                        if(result['status'] == 200){
-                            if($.isArray(id)){
-                                $(id).each(function(index,value){
-                                    console.log(value);
-                                    $("tr[data-id="+value+"]").remove();
-                                });
-                            }else{
-                                $("tr[data-id="+id+"]").remove();
-                            }
-                            
-                            layer.closeAll();
-                        }else{
-                            layer.msg(result.msg);
-                        }
-                    }
-                });
-            });
-        }
-    </script>
+  </div>
 </div>
+
+
+<script type="text/javascript">
+  layui.use('form', function(){
+    var form = layui.form();
+    //全选
+    form.on('checkbox(allChoose)', function(data){
+      var child = $(data.elem).parents('table').find('tbody input[type="checkbox"]');
+      child.each(function(index, item){
+        item.checked = data.elem.checked;
+      });
+      form.render('checkbox');
+    });
+  });
+
+  fuyun.components(['page'],{
+    el:"#fuyun-app",
+    data:{
+      labelPosition: 'top',
+    },
+  });
+</script>
+{/block}

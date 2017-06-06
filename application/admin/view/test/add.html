@@ -1,19 +1,16 @@
-<style type="text/css">
-	.layui-form{padding: 20px 10px 50px;overflow: hidden;zoom: 1;}
-	#LAY_demo_upload{max-width: 100%;
-		max-height: 160px;}
-	.layui-unselect{z-index: 99999;}
-</style>
-<div class="boke-wrap">
-    <div class="layui-tab">
-        <ul class="layui-tab-title">
-            <li><a href='{:Url("index")}' >测试列表</a></li>
-            <li class="layui-this"><a href='javascript:;' >添加测试</a></li>
-        </ul>
-    </div>
+{extend name="base" /}
+{block name="head"}
 
-	<form class="layui-form" method="post" action="{:Url('add')}">
-        
+{/block}
+{block name="main"}
+<div id="fuyun-app" class="fuyun-app">
+  <div class="fuyun-title">
+    <h5>添加数据</h5>
+    <a href="{:Url('index')}" class="layui-btn fuyun-add-btn layui-btn-small layui-btn-normal"><i class="fa fa-plus-square margin-right-5"></i>返回</a>
+  </div>
+  <div class="content-box">
+    <form class="layui-form padding-10" action="{:Url('add')}" method="post">
+			
 			<div class="layui-form-item">
 				<label class="layui-form-label">名字</label>
 				<div class="layui-input-inline">
@@ -54,7 +51,7 @@
             	<label class="layui-form-label">类型</label>
                 <div class="layui-input-inline">
                     <select name="type">
-                        <option value='0'>input</option><option value='1'>select</option><option value='2'>image</option><option value='3'>edit</option>
+                        <option value='0'>input</option><option value='1'>select</option>
                     </select>
                 </div>
             </div>
@@ -69,9 +66,7 @@
 				    <script type="text/javascript" charset="utf-8" src="/static/umeditor/umeditor.min.js"></script>
 				    <script type="text/javascript" src="/static/umeditor/lang/zh-cn/zh-cn.js"></script>
 
-					<script type="text/plain" id="myEditor" name="content" style="width:860px;height:240px;">
-					    <p></p>
-					</script>
+					<script type="text/plain" id="myEditor" name="content" style="width:860px;height:240px;"></script>
 					<script type="text/javascript">
 					    var um = UM.getEditor("myEditor");
 					</script>
@@ -80,65 +75,47 @@
 			
 			<div class="layui-form-item">
 				<label class="layui-form-label">banner图片</label>
-				<div class="layui-input-inline image_upload_box">
-					<input id="banner_image" type="text" name="banner_image" placeholder="请输入banner图片" class="layui-input preview_img" >
-				</div>
 				<div class="layui-input-inline">
-					<input type="file" name="banner_imageIMA" lay-type="IMA" class="layui-upload-banner_image layui-upload-file">
-					<a href="javascript:;" class="layui-btn layui-btn-primary" onclick="preview_img(this)">预览</a>
+					<input type="text" name="banner_image" placeholder="请输入banner图片" class="layui-input" >
 				</div>
-				<script type="text/javascript">
-					layui.use(["upload"],function(){
-						layui.upload({
-							url: "{:Url('upload/image')}"
-							,elem: ".layui-upload-banner_image"
-							,success: function(res){
-								$("#banner_image").val(res.data.src);
-							}
-						});  
-					});
-				</script>
 			</div>
 			
-
-		<div class="layui-form-item">
-			<div class="layui-input-block">
-				<button class="layui-btn" lay-submit lay-filter="ajaxForm">立即提交</button>
-				<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+			<div class="layui-form-item">
+				<div class="layui-input-block">
+					<button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+					<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+				</div>
 			</div>
-		</div>
-	</form>
-
-	<script type="text/javascript">
-
-		layui.use(['form','layer'], function(){
-	  		var form = layui.form();
-			form.on('submit(ajaxForm)', function(data){
-				var that = this;
-				$(that).attr("disabled","disabled");
-				$.ajax({ 
-					type: "post", 
-					url: data.form.action, 
-					data: data.field,
-					dataType: 'json', 
-					success: function(result){ 
-						if(result['code'] == 1){
-							layer.msg(result['msg']);
-							window.setTimeout(function(){
-								window.location.href = document.referrer;
-							},800);
-							
-						}else{
-							layer.msg(result['msg']);
-							$(that).removeAttr("disabled");
-						}
-					} 
-				});
-				return false;
-			});
-		})
-	</script>
+    </form>
+  </div>
 </div>
+<script type="text/javascript">
+
+  layui.use(['form'], function(){
+      var form = layui.form();
+    form.on('submit(formDemo)', function(data){
+      var that = this;
+      $(that).attr("disabled","disabled"); 
+      $.ajax({ 
+        type: "post", 
+        url: data.form.action, 
+        data: data.field,
+        dataType: 'json', 
+        success: function(result){ 
+          if(result['code'] == 1){
+            window.location.href = document.referrer;
+            layer.msg(result['msg']);
+          }else{
+            layer.msg(result['msg']);
+            $(that).removeAttr("disabled");
+          }
+        } 
+      });
+
+      return false;
+    });
+  })
+</script>
+{/block}
 
 
-		

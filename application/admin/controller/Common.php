@@ -33,7 +33,6 @@ class Common extends Controller
     }
 
     public function dologin(){
-        Session::set('user','user');
     	$post = Request::instance()->post();
     	if(Session::get('__token__') != $post['__token__']){
     		return json(['status'=>400,'msg'=>'验证失败']);

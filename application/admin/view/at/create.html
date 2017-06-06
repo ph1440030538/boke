@@ -116,16 +116,18 @@
 
 	<script type="text/javascript">
 		layui.use('form', function(){
-	  		var form = layui.form();
+	  	var form = layui.form();
 
 			form.on('submit(formDemo)', function(data){
 				$.ajax({ 
 					type: "post", 
 					url: data.form.action, 
 					data: data.field,
-					success: function(result){ 
+					success: function(result){
+						$(".create-file").css("display","block");
 					} 
 				});
+
 				return false;
 			});
 
@@ -157,7 +159,7 @@
 
 
 
-	<div class="create-file">
+	<div class="create-file" style="display:none;">
 		{volist name="files" id="file"}
 			<div class="layui-form-item">
 				<label class="layui-form-label">文件名</label>
