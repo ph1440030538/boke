@@ -1,0 +1,86 @@
+{extend name="base" /}
+{block name="head"}
+<style type="text/css">
+	.layui-form{padding: 10px;overflow: hidden;zoom: 1;}
+</style>
+{/block}
+{block name="main"}
+
+
+<div class="boke-wrap">
+	<form class="layui-form" method="post">
+
+		<div class="layui-form-item">
+			<label class="layui-form-label">权限组名字</label>
+			<div class="layui-input-inline">
+				<input type="text" name="group_name" placeholder="请输入权限组名字" class="layui-input" lay-verify="required" value="{$model.group_name}">
+			</div>
+		</div>
+
+		<fieldset class="layui-elem-field layui-field-title" style="margin-bottom: 2px;">
+			<legend>选择权限</legend>
+		</fieldset>
+		<div class="layui-form-item" style="padding:0px 20px;margin-bottom: 0px;">
+			<input type="radio" lay-filter="type" name="type" value="0" title="按规则名字" checked>
+			<input type="radio" lay-filter="type" name="type" value="1" title="按规则">
+		</div>
+
+		<div id="rule_name_box" class="layui-form-item" style="padding:3px 20px;">
+
+		</div>
+
+		<div class="layui-form-item">
+			<div class="layui-input-block">
+				<input type="hidden" name="id" value="{$model.id}">
+				<button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+				<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+			</div>
+		</div>
+
+	</form>
+
+	<script type="text/javascript">
+		layui.use(['form'], function(){
+	  		var form = layui.form();
+	  		var rule = {$rule};
+	  		_init_checkout(0);
+	  		function _init_checkout(type){
+	  			$("#rule_name_box").html("");
+	  			$(rule).each(function(index,value){
+	  				var title = type == 0 ? value.rule_name : value.rule;
+	  				$("#rule_name_box").append('<input type="checkbox" value="'+value.id+'" name="rule_ids['+value.id+']" title="'+title+'" lay-skin="primary" '+(value.selected ? "checked":'')+' >');
+	  			});
+	  			form.render();
+	  		}
+
+			form.on('submit(formDemo)', function(data){
+				$.ajax({ 
+					type: "post", 
+					url: data.form.action, 
+					data: data.field,
+					dataType: 'json', 
+					success: function(result){ 
+						if(result['code'] == 1){
+							parent.document.location.reload();
+							parent.layer.closeAll();
+							parent.layer.msg(result['msg']);
+						}else{
+							layer.msg(result['msg']);
+							$(that).removeAttr("disabled");
+						}
+					} 
+				});
+				return false;
+			});
+
+			form.on('radio(type)', function(data){
+				_init_checkout( $(this).val() );
+			}); 
+
+		})
+	</script>
+</div>
+{/block}
+
+
+		

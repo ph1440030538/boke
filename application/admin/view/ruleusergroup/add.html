@@ -1,0 +1,103 @@
+{extend name="base" /}
+{block name="head"}
+<style type="text/css">
+	.layui-form{padding: 10px;overflow: hidden;zoom: 1;}
+</style>
+{/block}
+{block name="main"}
+<div class="boke-wrap">
+	<form class="layui-form" method="post">
+
+		<div class="layui-form-item">
+			<label class="layui-form-label">角色名字</label>
+			<div class="layui-input-inline">
+				<input type="text" name="user_group_name" placeholder="请输入角色名字" class="layui-input" lay-verify="required">
+			</div>
+		</div>
+
+		<fieldset class="layui-elem-field layui-field-title" style="margin-bottom: 2px;">
+			<legend>角色</legend>
+		</fieldset>
+		<div id="user_group_box" class="layui-form-item" style="padding:3px 20px;">
+			{volist name="rule_user_group" id="vo"}
+				<input type="checkbox" value="{$vo.id}" name="user_group_ids[{$vo.id}]" lay-filter="checkbox" title="{$vo.user_group_name}" lay-skin="primary">
+			{/volist}
+		</div>
+
+		<fieldset class="layui-elem-field layui-field-title" style="margin-bottom: 2px;">
+			<legend>权限组</legend>
+		</fieldset>
+		<div id="group_box" class="layui-form-item" style="padding:3px 20px;">
+			{volist name="rule_group" id="vo"}
+				<input type="checkbox" value="{$vo.id}" name="group_ids[{$vo.id}]" lay-filter="checkbox" title="{$vo.group_name}" lay-skin="primary">
+			{/volist}
+		</div>
+
+		<fieldset class="layui-elem-field layui-field-title" style="margin-bottom: 2px;">
+			<legend>权限规则</legend>
+		</fieldset>
+		<div class="layui-form-item" style="padding:0px 20px;margin-bottom: 0px;">
+			<input type="radio" lay-filter="type" name="type" value="0" title="按规则名字" checked>
+			<input type="radio" lay-filter="type" name="type" value="1" title="按规则">
+		</div>
+
+		<div id="rule_box" class="layui-form-item" style="padding:3px 20px;"></div>
+
+		<div class="layui-form-item">
+			<div class="layui-input-block">
+				<button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+				<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+			</div>
+		</div>
+
+	</form>
+
+	<script type="text/javascript">
+
+		layui.use(['form'], function(){
+	  		var form = layui.form();
+	  		var rule = {$rule};
+	  		_init_checkout(0);
+	  		function _init_checkout(type){
+	  			$("#rule_box").html("");
+	  			$(rule).each(function(index,value){
+	  				var title = type == 0 ? value.rule_name : value.rule;
+	  				$("#rule_box").append('<input type="checkbox" value="'+value.id+'" name="rule_ids['+value.id+']" lay-filter="checkbox" title="'+title+'" lay-skin="primary">');
+	  			});
+	  			form.render();
+	  		}
+
+			form.on('radio(type)', function(data){
+				_init_checkout( $(this).val() );
+			}); 
+
+			form.on('submit(formDemo)', function(data){
+				$.ajax({ 
+					type: "post", 
+					url: data.form.action, 
+					data: data.field,
+					dataType: 'json', 
+					success: function(result){ 
+						if(result['code'] == 1){
+							parent.document.location.reload();
+							parent.layer.closeAll();
+							parent.layer.msg(result['msg']);
+						}else{
+							layer.msg(result['msg']);
+							$(that).removeAttr("disabled");
+						}
+					} 
+				});
+
+				return false;
+			});
+
+		})
+	</script>
+</div>
+{/block}
+
+
+
+
+		

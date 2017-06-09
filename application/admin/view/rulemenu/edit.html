@@ -1,0 +1,120 @@
+{extend name="base" /}
+{block name="head"}
+<style type="text/css">
+	.layui-form{padding: 10px;overflow: hidden;zoom: 1;}
+	#LAY_demo_upload{max-width: 100%;
+		max-height: 160px;}
+</style>
+{/block}
+{block name="main"}
+<div id="fuyun-app" class="fuyun-app">
+  <div class="fuyun-title">
+    <h5>编辑数据</h5>
+    <a href="{:Url('index')}" class="layui-btn fuyun-add-btn layui-btn-small layui-btn-normal"><i class="fa fa-plus-square margin-right-5"></i>返回</a>
+  </div>
+	<div class="content-box">
+		<form class="layui-form padding-10" method="post">
+			<div class="layui-form-item">
+				<label class="layui-form-label">父级菜单</label>
+				<div class="layui-input-inline">
+					<select name="parentid" lay-verify="required">
+						<option value="0">最高级</option>
+						{$option}
+					</select>
+				</div>
+			</div>
+
+			<div class="layui-form-item">
+				<label class="layui-form-label">菜单名称</label>
+				<div class="layui-input-inline">
+					<input type="text" name="name" lay-verify="required" placeholder="请输入菜单名称" class="layui-input" value="{$model['name']}" >
+				</div>
+			</div>
+
+			<div class="layui-form-item" style="width: 50%;">
+				<label class="layui-form-label">url地址</label>
+				<div class="layui-input-block">
+					<input type="text" name="url" lay-verify="required" placeholder="例如：/admin/rulemenu/index" class="layui-input" value="{$model['url']}" >
+				</div>
+			</div>
+
+			<div class="layui-form-item">
+				<label class="layui-form-label">状态</label>
+				<div class="layui-input-inline">
+			      <input type="radio" name="status" value="1" title="显示" checked="" <?php if($model['status'] == 1){echo 'selected';}?> >
+			      <input type="radio" name="status" value="0" title="不显示" <?php if($model['status'] == 0){echo 'selected';}?> >
+				</div>
+			</div>
+
+			<div class="layui-form-item">
+				<label class="layui-form-label">菜单图标</label>
+				<div class="layui-input-inline">
+					<input type="text" name="icon" placeholder="请输入菜单图标" class="layui-input"  value="{$model['icon']}" >
+				</div>
+			</div>
+
+			<div class="layui-form-item">
+				<label class="layui-form-label">备注</label>
+				<div class="layui-input-inline">
+					<input type="text" name="remark" placeholder="请输入备注" class="layui-input" value="{$model['remark']}" >
+				</div>
+			</div>
+
+			<div class="layui-form-item">
+				<label class="layui-form-label">排序ID</label>
+				<div class="layui-input-inline">
+					<input type="text" name="sort" placeholder="请输入排序ID" class="layui-input" value="{$model['sort']}" >
+				</div>
+			</div>
+
+			<div class="layui-form-item">
+				<div class="layui-input-block">
+					<input type="hidden" name="id" value="{$model['id']}">
+					<button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+
+<script type="text/javascript">
+	layui.use(['form','upload'], function(){
+  		var form = layui.form();
+		form.on('submit(formDemo)', function(data){
+			var that = this;
+			$(that).attr("disabled","disabled");
+			$.ajax({ 
+				type: "post", 
+				url: data.form.action, 
+				data: data.field,
+				dataType: 'json', 
+				success: function(result){ 
+					if(result['code'] == 1){
+            window.location.href = document.referrer;
+            layer.msg(result['msg']);
+					}else{
+						layer.msg(result['msg']);
+						$(that).removeAttr("disabled");
+					}
+				} 
+			});
+
+			return false;
+		});  
+	})
+
+	function preview_img(obj){
+		layer.photos({
+			photos: {
+				data:[{src:$(obj).parent().parent().find(".preview_img").val()}]
+			}
+			,anim: 5
+		});
+	}
+</script>
+{/block}
+
+
+
+
+		

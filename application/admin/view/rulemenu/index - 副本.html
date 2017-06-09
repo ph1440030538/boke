@@ -1,0 +1,94 @@
+{extend name="base" /}
+{block name="head"}
+    <style type="text/css">
+        .boke-wrap .name{margin-left: 5px;}
+        .tree-space{margin-left: 35px;}
+        td{cursor: pointer;}
+    </style>
+{/block}
+{block name="main"}
+    <div class="boke-wrap">
+        <div class="layui-tab">
+            <ul class="layui-tab-title">
+                <li class="layui-this">后台菜单列表</li>
+                <li><a href="{:Url('add')}">添加后台菜单</a></li>
+            </ul>
+        </div>
+        
+        <button id="show_tree" data-flag=1 class="layui-btn layui-btn-primary">展开全部</button>
+        <div class="boke-table">
+            <table class="layui-table layui-form">
+                <thead>
+                    <tr>
+                        <th width="3%">ID</th>
+                        <th>菜单名称</th>
+                        <th width="8%">排序</th>
+                        <th width="15%">操作</th>
+                    </tr> 
+                </thead>
+                <tbody id="layer_tbody">
+
+                </tbody>
+            </table>
+
+            <div class="page">
+                <div id="page"></div>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            layui.use(['tabletree', 'layer','form'], function(){
+                var layer = layui.layer;
+                layui.tabletree({
+                    "elem": "#layer_tbody",
+                    "nodes": <?=json_encode($list)?>,
+                    "is_spread": true
+                });
+
+                $("#show_tree").on("click", function(){
+                    if($(this).attr("data-flag")==1){
+                        $(this).attr("data-flag",0);
+                        $("#layer_tbody").html("");
+                        layui.tabletree({
+                            "elem": "#layer_tbody",
+                            "nodes": <?=json_encode($list)?>,
+                            "is_spread": false
+                        });
+                    }else{
+                        $(this).attr("data-flag",1);
+                        $("#layer_tbody").html("");
+                        layui.tabletree({
+                            "elem": "#layer_tbody",
+                            "nodes": <?=json_encode($list)?>,
+                            "is_spread": true
+                        });
+                    }
+
+                });
+            });
+
+            function del(id,obj){
+                layer.confirm('是否确定删除？', {
+                    btn: ['是','否'] //按钮
+                }, function(){
+                    $.ajax({
+                        type : 'post',
+                        url : "{:Url('deleteAll')}",
+                        data : {id:id},
+                        dataType: 'json',
+                        success: function(result){
+                            if(result['status'] == 200){
+                                $(obj).parent().parent().parent().remove();
+                                layer.closeAll();
+                            }else{
+                                layer.msg(result.msg);
+                            }
+                        }
+                    });
+                });
+            }
+        </script>
+    </div>
+
+
+{/block}

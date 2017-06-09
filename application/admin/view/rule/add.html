@@ -1,0 +1,85 @@
+{extend name="base" /}
+{block name="head"}
+<style type="text/css">
+	.layui-form{padding: 10px;}
+</style>
+{/block}
+{block name="main"}
+<div class="boke-wrap">
+	<form class="layui-form" method="post">
+
+		<div class="layui-form-item">
+			<label class="layui-form-label">权限名字</label>
+			<div class="layui-input-inline">
+				<input type="text" name="rule_name" placeholder="请输入权限名字" class="layui-input" lay-verify="required">
+			</div>
+		</div>
+
+		<div class="layui-form-item">
+			<label class="layui-form-label">权限规则</label>
+			<div class="layui-input-inline">
+				<input type="text" name="rule" placeholder="请输入权限规则" class="layui-input" lay-verify="required" >
+			</div>
+		</div>
+
+		<div class="layui-form-item">
+			<label class="layui-form-label">额外参数</label>
+			<div class="layui-input-inline">
+				<input type="text" name="params" placeholder="请输入额外参数" class="layui-input" >
+				<span style="color: red">参数格式如：id=5&status=1</span>
+			</div>
+
+		</div>
+
+		<div class="layui-form-item">
+			<label class="layui-form-label">验证状态</label>
+			<div class="layui-input-inline">
+				<select name="isAccept" lay-verify="required">
+					<option value="1">通过</option>
+					<option value="0">不通过</option>
+				</select>
+			</div>
+		</div>
+
+		<div class="layui-form-item">
+			<div class="layui-input-block">
+				<button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+				<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+			</div>
+		</div>
+
+	</form>
+
+	<script type="text/javascript">
+
+		layui.use(['form'], function(){
+	  	var $ = layui.jquery,form = layui.form();
+			form.on('submit(formDemo)', function(data){
+				$.ajax({ 
+					type: "post", 
+					url: data.form.action, 
+					data: data.field,
+					dataType: 'json', 
+					success: function(result){ 
+						if(result['code'] == 1){
+							parent.document.location.reload();
+							parent.layer.closeAll();
+							parent.layer.msg(result['msg']);
+						}else{
+							layer.msg(result['msg']);
+						}
+					} 
+				});
+
+				return false;
+			});
+
+		})
+	</script>
+</div>
+{/block}
+
+
+
+
+		

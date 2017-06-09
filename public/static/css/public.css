@@ -1,0 +1,21 @@
+nav.fy_nav{background-color: #393D49;height: 60px;width: 100%;z-index: 99999999;}
+.fy_nav .logo{position: absolute;color: #fff;top: 0px;z-index: 99999999;font-size: 18px;height: 60px;line-height: 60px;left: 0%;}
+.fy_nav .layui-nav{padding-left: 12%;border-radius: 0px;}
+.fy_nav .fa-list{font-size: 18px;color: #fff;height: 60px;line-height: 60px;margin-left:20px;display: none;}
+
+@media screen and (max-width: 680px) {
+    .fy_nav .layui-nav-tree{display: none;padding-left:0px;width: 100%;}
+    .fy_nav .layui-nav{display: none;}
+    .fy_nav .logo{left: 50%;margin-left: -50px;}
+    .fy_nav .fa-list{display: block;}
+}
+@media screen and (min-width: 680px) and (max-width: 1180px) {
+    .fy_nav .layui-nav{padding-left: 19%;display: block;}
+    .fy_nav .layui-nav-tree{display: none;}
+    .fy_nav .logo{left: 3%;}
+}
+@media screen and (min-width: 1180px) {
+    .fy_nav .layui-nav{padding-left: 13%;display: block;}
+    .fy_nav .layui-nav-tree{display: none;}
+    .fy_nav .logo{left: 3%;}
+}

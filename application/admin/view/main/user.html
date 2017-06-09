@@ -1,0 +1,57 @@
+{extend name="base" /}
+{block name="head"}
+<style type="text/css">
+.wrap{padding: 20px;}
+</style>
+{/block}
+{block name="main"}
+	<form class="layui-form" action="" method="post">
+	  <div class="layui-form-item">
+	    <label class="layui-form-label">输入密码</label>
+	    <div class="layui-input-inline">
+	      <input type="password" name="password" required lay-verify="required" placeholder="请输入密码" class="layui-input">
+	    </div>
+	  </div>
+	  <div class="layui-form-item">
+	    <label class="layui-form-label">重复输入</label>
+	    <div class="layui-input-inline">
+	      <input type="password" name="repassword" required lay-verify="required" placeholder="请再次输入密码" class="layui-input">
+	    </div>
+	  </div>
+
+	  <div class="layui-form-item">
+	    <div class="layui-input-block">
+	      <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+	      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+	    </div>
+	  </div>
+
+	</form>
+
+<script type="text/javascript">
+//Demo
+layui.use('form', function(){
+  var form = layui.form();
+  
+  //监听提交
+  form.on('submit(formDemo)', function(data){
+    $.ajax({ 
+      type: "post", 
+      url: data.form.action, 
+      data: data.field,
+      dataType: 'json', 
+      success: function(result){ 
+        if(result['code'] == 1){
+          window.location.href = "{:Url('main/user')}";
+          layer.msg(result['msg']);
+        }else{
+          layer.msg(result['msg']);
+          $(that).removeAttr("disabled");
+        }
+      } 
+    });
+
+  });
+});
+</script>
+{/block}

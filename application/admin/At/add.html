@@ -1,0 +1,52 @@
+{extend name="base" /}
+{block name="head"}
+
+{/block}
+{block name="main"}
+<div id="fuyun-app" class="fuyun-app">
+  <div class="fuyun-title">
+    <h5>添加数据</h5>
+    <a href="{:Url('index')}" class="layui-btn fuyun-add-btn layui-btn-small layui-btn-normal"><i class="fa fa-plus-square margin-right-5"></i>返回</a>
+  </div>
+  <div class="content-box">
+    <form class="layui-form padding-10" action="{:Url('add')}" method="post">
+			【html_item】
+			<div class="layui-form-item">
+				<div class="layui-input-block">
+					<button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+					<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+				</div>
+			</div>
+    </form>
+  </div>
+</div>
+<script type="text/javascript">
+
+  layui.use(['form'], function(){
+      var form = layui.form();
+    form.on('submit(formDemo)', function(data){
+      var that = this;
+      $(that).attr("disabled","disabled"); 
+      $.ajax({ 
+        type: "post", 
+        url: data.form.action, 
+        data: data.field,
+        dataType: 'json', 
+        success: function(result){ 
+          if(result['code'] == 1){
+            window.location.href = document.referrer;
+            layer.msg(result['msg']);
+          }else{
+            layer.msg(result['msg']);
+            $(that).removeAttr("disabled");
+          }
+        } 
+      });
+
+      return false;
+    });
+  })
+</script>
+{/block}
+
+

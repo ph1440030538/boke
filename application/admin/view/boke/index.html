@@ -1,0 +1,116 @@
+<style type="text/css">
+.layui-search{padding: 10px;border: 1px solid #ddd;background-color: #ddd;}
+.layui-search .layui-form-label{text-align:left;}
+layui-form-label
+</style>
+<div class="fuyun-wrap">
+    <div class="layui-tab">
+        <ul class="layui-tab-title">
+            <li class="layui-this">分类列表</li>
+            <li><a href={:Url("add")}>添加分类</a></li>
+        </ul>
+    </div>
+    
+    <div class="layui-search">
+<!--         <div class="layui-inline">
+            <label class="layui-form-label">名字</label>
+            <input type="text" name="content" class="layui-input">
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">&nbsp;</label>
+            <div>
+                <input type="button" class="layui-btn" name="content" class="layui-input" value="搜索">
+            </div>
+        </div> -->
+    </div>
+
+    <div class="fuyun-content">
+        <table class="layui-table">
+            <thead>
+                <tr>
+                    <th width="10%">标题</th>
+                    <th width="10%">关键字</th>
+                    <th width="10%">描述</th>
+                    <th width="10%">内容</th>
+                    <th width="10%">文章来源</th>
+                    <th width="10%">article_tpl</th>
+                    <th width="10%">create_time</th>
+                    <th width="10%">update_time</th>
+                    <th width="10%">操作</th>
+                </tr> 
+            </thead>
+            <tbody>
+                {volist name="lists" id="vo"}
+                    <tr data-id="{$vo.id}">
+                        <td class='layui-elip'>{$vo.title}</td>
+                        <td class='layui-elip'>{$vo.keywords}</td>
+                        <td class='layui-elip'>{$vo.describe}</td>
+                        <td class='layui-elip'>{$vo.content}</td>
+                        <td class='layui-elip'>{$vo.source}</td>
+                        <td class='layui-elip'>{$vo.article_tpl}</td>
+                        <td class='layui-elip'>{$vo.create_time}</td>
+                        <td class='layui-elip'>{$vo.update_time}</td>
+                        <td>
+                            <a href="{:Url('edit')}?id={$vo['id']}">编辑</a>/
+                            <a href="javascript:;" onclick="del({$vo.id})" >删除</a>
+                        </td>
+                    </tr>
+                {/volist}
+            </tbody>
+        </table>
+
+        <div class="page">
+            <div id="demo1"></div>
+            <script>
+                layui.use(['laypage', 'layer'], function(){
+                    var laypage = layui.laypage
+                    ,layer = layui.layer;
+                    laypage({
+                        cont: 'demo1'
+                        ,pages: {$pages} //总页数
+                        ,groups: 5 //连续显示分页数
+                        ,curr: {$curPage}
+                        ,skip: true
+                        ,jump: function(obj, first){
+                            if(!first){
+                                var url = window.location.href;
+                                if(url.indexOf("?")==-1){
+                                    window.location.href = url+"?page="+obj.curr;
+                                }else{
+                                    if(url.indexOf("page")==-1){
+                                        window.location.href = url+"&page="+obj.curr;
+                                    }else{
+                                        window.location.href = url.replace(/page=\d*/, 'page='+obj.curr)
+                                    }                                        
+                                }
+                            }                       
+                        }
+                    });
+                });
+            </script>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        function del(id){
+            layer.confirm('是否确定删除？', {
+                btn: ['是','否'] //按钮
+            }, function(){
+                $.ajax({
+                    type : 'get',
+                    url : "{:Url('delete')}",
+                    data : {id:id},
+                    dataType: 'json',
+                    success: function(result){
+                        if(result['status'] == 200){
+                            $("tr[data-id="+id+"]").remove();
+                            layer.closeAll();
+                        }else{
+                            layer.msg(result.msg);
+                        }
+                    }
+                });
+            });
+        }
+    </script>
+</div>

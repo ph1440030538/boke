@@ -1,0 +1,93 @@
+{extend name="base" /}
+{block name="head"}
+{/block}
+{block name="main"}
+<div class="at-create">
+	{volist name="files" id="file"}
+		<div class="layui-form-item">
+			<label class="layui-form-label">文件名</label>
+			<div class="layui-input-inline" style="width: 60%;">
+				{if $file['isExist'] == true}
+					<input type="text" style="color: red;" class="layui-input" value="{$file.filename}(已存在)" disabled="disabled">
+				{else/}
+					<input type="text" class="layui-input" value="{$file.filename}" disabled="disabled">
+				{/if}
+			</div>
+			<div class="layui-input-inline" style="width: 20%;">
+				<div class="layui-btn-group">
+					<button type="button" data-isexist=true onclick="create('{$key}',this)" class="layui-btn layui-btn-small create-btn">生成</button>
+				</div>
+			</div>
+		</div>
+	{/volist}
+
+
+	<div class="layui-block">
+		<div class="layui-input-block">
+			<input type="hidden" name="typeFile" value="createModel">
+			<button type="button" onclick="create('all')" class="layui-btn">生成文件</button>
+		</div>
+	</div>
+
+
+
+	<script type="text/javascript">
+		function create(file, obj = null){
+			if(file != 'all'){
+				if($(obj).data("isexist")){
+					layer.confirm('文件已经存在是否再次生成？', {
+					  btn: ['是','否'] //按钮
+					}, function(){
+						$.ajax({ 
+							type: "post", 
+							url: "startCreate", 
+							data: {filename:file},
+							dataType: 'json', 
+							success: function(result){ 
+								if(result['code'] == 1){
+									layer.msg(result['msg']);
+								}else{
+									layer.msg(result['msg']);
+									// $(that).removeAttr("disabled");
+								}
+							} 
+						});
+					}, function(){
+						return;
+					});
+				}else{
+					$(obj).data("isexist",true);
+				}
+			}else{
+				var flag = false;
+				$(".create-btn").each(function(){
+					if($(this).data("isexist")){
+						flag = true;
+					}
+				});
+				layer.confirm('文件已经有存在是否再次生成？', {
+				  btn: ['是','否'] //按钮
+				}, function(){
+					$.ajax({ 
+						type: "post", 
+						url: "startCreate", 
+						data: {filename:file},
+						dataType: 'json', 
+						success: function(result){ 
+							if(result['code'] == 1){
+								layer.msg(result['msg']);
+							}else{
+								layer.msg(result['msg']);
+								// $(that).removeAttr("disabled");
+							}
+						} 
+					});
+				}, function(){
+					return;
+				});
+			}
+		}
+	</script>
+
+</div>
+{/block}

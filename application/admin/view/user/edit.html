@@ -1,0 +1,106 @@
+{extend name="base" /}
+{block name="head"}
+{/block}
+{block name="main"}
+<div id="fuyun-app" class="fuyun-app">
+  <div class="fuyun-title">
+    <h5>编辑数据</h5>
+    <a href="{:Url('index')}" class="layui-btn fuyun-add-btn layui-btn-small layui-btn-normal"><i class="fa fa-plus-square margin-right-5"></i>返回</a>
+  </div>
+	<div class="content-box">
+		<form class="layui-form padding-10" method="post" action="{:Url('edit')}">
+			<div class="left-box">
+				
+				<div class="layui-form-item">
+					<label class="layui-form-label">图片</label>
+					<div class="layui-input-inline image_upload_box">
+						<input id="avatar" type="text" name="avatar" placeholder="请输入图片" class="layui-input preview_img" value="{$model['avatar']}">
+					</div>
+					<div class="layui-input-inline">
+						<input type="file" name="avatarIMA" lay-type="IMA" class="layui-upload-avatar layui-upload-file">
+						<a href="javascript:;" class="layui-btn layui-btn-primary" onclick="preview_img(this)">预览</a>
+					</div>
+					<script type="text/javascript">
+						layui.use(["upload"],function(){
+							layui.upload({
+								url: "{:Url('upload/image')}"
+								,elem: ".layui-upload-avatar"
+								,success: function(res){
+									$("#avatar").val(res.data.src);
+								}
+							});  
+						});
+					</script>
+				</div>
+				
+				<div class="layui-form-item">
+					<label class="layui-form-label">用户名</label>
+					<div class="layui-input-inline">
+						<input type="text" name="username" placeholder="请输入用户名" class="layui-input" value="{$model['username']}">
+					</div>
+				</div>
+				
+				<div class="layui-form-item">
+					<label class="layui-form-label">密码</label>
+					<div class="layui-input-inline">
+						<input type="password" name="password" placeholder="请输入密码" class="layui-input" value="{$model['password']}">
+					</div>
+				</div>
+				
+
+				<div class="layui-form-item">
+					<div class="layui-input-block">
+						<input type="hidden" name="id" value="{$model.id}">
+						<button class="layui-btn" lay-submit lay-filter="ajaxForm">立即提交</button>
+						<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+					</div>
+				</div>
+			</div>
+			<div class="right-box">
+			</div>
+		</form>
+	</div>
+</div>
+<script type="text/javascript">
+	layui.use(['form'], function(){
+  		var form = layui.form();
+		form.on('submit(ajaxForm)', function(data){
+			var that = this;
+			$(that).attr("disabled","disabled");
+			$.ajax({ 
+				type: "post", 
+				url: data.form.action, 
+				data: data.field,
+				dataType: 'json', 
+				success: function(result){ 
+					if(result['code'] == 1){
+						layer.msg(result['msg']);
+						window.setTimeout(function(){
+							window.location.href = document.referrer;
+						},800);
+						
+					}else{
+						layer.msg(result['msg']);
+						$(that).removeAttr("disabled");
+					}
+				} 
+			});
+			return false;
+		});
+	})
+
+	function preview_img(obj){
+		layer.photos({
+			photos: {
+				data:[{src:$(obj).parent().parent().find(".preview_img").val()}]
+			}
+			,anim: 5
+		});
+	}
+</script>
+{/block}
+
+
+
+
+		

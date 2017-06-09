@@ -1,0 +1,104 @@
+{extend name="base" /}
+{block name="head"}
+{/block}
+{block name="main"}
+<div id="fuyun-app" class="fuyun-app">
+  <div class="content-box">
+    <div class="fuyun-title">
+      <h5>后台菜单列表</h5>
+      <a href="{:Url('add')}" class="layui-btn fuyun-add-btn layui-btn-small layui-btn-normal"><i class="fa fa-plus-square margin-right-5"></i>添加后台菜单</a>
+    </div>
+    <div class="main-box">
+      <div class="tree-box">
+        <el-tree
+          :data="treeData"
+          :props="defaultProps"
+          node-key="id"
+          :default-expand-all = "expand_all"
+          :expand-on-click-node="true"
+          :render-content="renderContent">
+        </el-tree>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+  let id = 1000;
+  var Main = {
+    data() {
+      return {
+        treeData: <?=json_encode($list)?>,
+        defaultProps: {
+          children: 'children',
+          label: 'name',
+        },
+        expand_all: true,
+        tree:[],
+      }
+    },
+
+    methods: {
+      append(store, data) {
+        store.append({ id: id++, label: 'testtest', children: [] }, data);
+      },
+
+      remove(store, data) {
+        store.remove(data);
+      },
+
+      renderContent(createElement, { node, data, store }) {
+        var id = node.data.id;
+        var add_url = "{:Url('add')}?id="+node.data.id;
+        var edit_url = "{:Url('edit')}?id="+node.data.id;
+        // store.remove(data);
+        this.tree[id] = {store:store,data:data};
+        return createElement("span",[
+          createElement("span",[
+            createElement("span",node.data.label)
+          ]),
+          createElement("span",{
+            attrs:{
+              style: "float: right; margin-right: 20px"
+            }
+          },[
+            createElement("el-button",{attrs:{size:"mini","onclick":"window.location.href='"+edit_url+"'" }},"编辑"),
+            createElement("el-button",{attrs:{size:"mini","onclick":"window.location.href='"+add_url+"'" }},"添加子菜单"),
+            createElement("el-button",{attrs:{size:"mini","onclick":"del(this,"+id+")",'data-id':node.data.id,}},"删除"),
+          ])
+        ]);
+      }
+    },
+  };
+var Ctor = Vue.extend(Main)
+var vw = new Ctor()
+vw.$mount('#fuyun-app')
+
+layui.use('layer', function(){
+
+});
+function del(obj,id){
+  
+  var id = $(obj).data("id");
+
+  var layerDelIndex = layer.confirm("是否确定删除？", {
+    btn: ['是','否'] //按钮
+  }, function(){
+    $.ajax({
+      type:'post',
+      url: "{:Url('deleteAll')}",
+      data:{id:id},
+      success: function(data){
+        $("tr[data-id='"+id+"']").remove();
+        layer.msg("删除成功！");
+        layer.close(layerDelIndex);
+        vw.tree[id].store.remove(vw.tree[id].data);
+      }
+    });
+  }, function(){
+    return;
+  });
+}
+</script>
+
+{/block}

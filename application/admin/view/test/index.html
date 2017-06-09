@@ -1,0 +1,86 @@
+{extend name="base" /}
+{block name="head"}
+{/block}
+{block name="main"}
+<div id="fuyun-app" class="fuyun-app">
+  <div class="content-box">
+    <div class="fuyun-title">
+      <h5>测试列表</h5>
+      <a href="{:Url('add')}" class="layui-btn fuyun-add-btn layui-btn-small layui-btn-normal add"><i class="fa fa-plus-square margin-right-5"></i>添加测试</a>
+    </div>
+    <div class="main-box">
+      <table class="layui-table layui-form">
+        <thead>
+          <tr>
+            <th width="3%"><input type="checkbox" name="" lay-skin="primary" lay-filter="allChoose"></th>
+						<th>名字</th>
+						<th>关键字</th>
+						<th>图片</th>
+						<th>类型</th>
+						<th>内容</th>
+						<th>banner图片</th>
+            <th>操作</th>
+          </tr> 
+        </thead>
+        <tbody>
+          {volist name="list['data']" id="vo"}
+            <tr data-id="{$vo.id}">
+              <td><input type="checkbox" name="id[]" lay-skin="primary" value="{$vo.id}" ></td>
+							<td class='layui-elip'>{$vo.name}</td>
+							<td class='layui-elip'>{$vo.keyword}</td>
+							<td class='layui-elip'>{$vo.image}</td>
+							<td class='layui-elip'>{$vo.type}</td>
+							<td class='layui-elip'>{$vo.content}</td>
+							<td class='layui-elip'>{$vo.banner_image}</td>
+              <td>
+                <div class="layui-btn-group">
+                  <a class="layui-btn layui-btn-normal layui-btn-small" href="{:Url('edit')}?id={$vo['id']}">编辑</a>
+                  <button class="layui-btn fuyun-btn-del layui-btn-small btn-del-id" data-url="{:Url('deleteAll')}" data-confirm="确定删除该分类吗？" data-successtip="删除成功！" data-id="<?=$vo['id']?>" ><i class="fa fa-close margin-right-5"></i>删除</button>
+                </div>
+              </td>
+            </tr>
+          {/volist}
+        </tbody>
+        <tfoot>
+          <tr>
+            <th width="2%"><input type="checkbox" name="" lay-skin="primary" lay-filter="allChoose"></th>
+            <th colspan="8" class="operator-button" style="text-align:left">
+                <button class="layui-btn layui-btn-small fuyun-btn-del btn-del-ids" data-url="{:Url('deleteAll')}" data-confirm="确定要批量删除吗?" data-successtip="批量删除成功!"  method-type="post" style="margin-top:5px"><i class="fa fa-close margin-right-5"></i>批量删除</button>
+            </th>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+    <div class="page-box">
+      <fuyun-page 
+        :pagesize="<?=$list['page']['pageSize']?>" 
+        :total = "<?=$list['page']['total']?>"
+        :current-page = "{$list['page']['curPage']}"
+      ></fuyun-page>
+    </div>
+
+  </div>
+</div>
+
+
+<script type="text/javascript">
+  layui.use('form', function(){
+    var form = layui.form();
+    //全选
+    form.on('checkbox(allChoose)', function(data){
+      var child = $(data.elem).parents('table').find('tbody input[type="checkbox"]');
+      child.each(function(index, item){
+        item.checked = data.elem.checked;
+      });
+      form.render('checkbox');
+    });
+  });
+
+  fuyun.components(['page'],{
+    el:"#fuyun-app",
+    data:{
+      labelPosition: 'top',
+    },
+  });
+</script>
+{/block}

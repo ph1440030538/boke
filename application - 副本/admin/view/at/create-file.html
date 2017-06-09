@@ -1,0 +1,55 @@
+<style type="text/css">
+body{background-color: #fff;}
+</style>
+<div class="at-create" style="padding: 10px;">
+	<form class="layui-form" action="{:Url('admin/at/startCreate')}" method="post">
+
+		<div class="layui-form-item">
+			<label class="layui-form-label">文件目录</label>
+			<div class="layui-input-block">
+				{if $file['model']['isExist']}
+					<input type="text" style="color: red" class="layui-input" value="{$file['model']['file']}(存在)" disabled="disabled">
+				{else /}
+					<input type="text" class="layui-input" value="{$file['model']['file']}" disabled="disabled">
+				{/if}
+			</div>
+		</div>
+
+		<div class="layui-block">
+			<div class="layui-input-block">
+				<input type="hidden" name="typeFile" value="createModel">
+				<button class="layui-btn" lay-submit lay-filter="formDemo">生成文件</button>
+			</div>
+		</div>
+	</form>
+
+
+
+	<script type="text/javascript">
+		layui.use(['form','layer'], function(){
+	  		var form = layui.form();
+
+			form.on('submit(formDemo)', function(data){
+				var that = this;
+				$(that).attr("disabled","disabled");
+				$.ajax({ 
+					type: "post", 
+					url: data.form.action, 
+					data: data.field,
+					dataType: 'json', 
+					success: function(result){ 
+						if(result['code'] == 1){
+							layer.msg(result['msg']);
+						}else{
+							layer.msg(result['msg']);
+							$(that).removeAttr("disabled");
+						}
+					} 
+				});
+
+				return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+			});
+		})
+	</script>
+
+</div>

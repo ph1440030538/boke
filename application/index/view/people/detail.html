@@ -1,0 +1,77 @@
+<style type="text/css">
+	.people-detail{max-width: 1180px;margin:0 auto;}
+	.image-box ul{overflow: hidden;zoom: 1;}
+	.image-box li{float: left;}
+	
+	.img{width: 100px;height: 100px;}
+</style>
+<div class="people-detail">
+	<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+		<legend>走失信息</legend>
+	</fieldset>
+	<form class="layui-form layui-form-pane" action="dorelease"  method="post">
+
+		<div class="layui-form-item image-item">
+			<div class="image-box">
+				<ul>
+					{volist name="lostProple['images']" id="image"}
+					<li>
+						<div class="grid">
+							<img class='img' src="{$image}" />
+						</div>
+					</li>
+					{/volist}
+				</ul>
+			</div>
+		</div>
+
+		<div class="layui-form-item">
+			<label class="layui-form-label">名字</label>
+			<div class="layui-input-block">
+				<input type="text" class="layui-input" disabled value="{$lostProple['name']}">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">性别</label>
+			<div class="layui-input-block">
+				<input type="text" class="layui-input" disabled value="<?=$lostProple['sex'] ==1 ? '男':'女'?>">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">出生年月</label>
+			<div class="layui-input-block">
+				<input type="text" class="layui-input" disabled value="{$lostProple['birthday']}">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">走失日期</label>
+			<div class="layui-input-block">
+				<input type="text" class="layui-input" disabled value="{$lostProple['lost_date']}">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<textarea name="address" disabled class="layui-textarea">{$lostProple['features']}</textarea>
+		</div>
+		<div class="layui-form-item">
+			<textarea name="address" disabled class="layui-textarea">{$lostProple['address']}</textarea>
+		</div>
+		<div class="layui-form-item">
+			<textarea name="address" disabled class="layui-textarea">{$lostProple['event']}</textarea>
+		</div>
+
+		<div class="layui-collapse">
+			<div class="layui-colla-item">
+				<h2 class="layui-colla-title">联系方式</h2>
+				<div class="layui-colla-content layui-show">
+					<div class="layui-form-item">
+						<input type="text" name="contact_mobile" disabled placeholder="联系人" value="{$lostProple['contact_name']}" class="layui-input">
+					</div>
+					<div class="layui-form-item">
+						<input type="text" name="contact_mobile" disabled placeholder="联系手机" value="{$lostProple['contact_mobile']}" class="layui-input">
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</form>
+</div>

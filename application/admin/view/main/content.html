@@ -1,0 +1,38 @@
+{extend name="base" /}
+{block name="head"}
+<style type="text/css">
+.wrap{padding: 20px;}
+</style>
+{/block}
+{block name="main"}
+	<div class="wrap">
+		<p>服务器信息</p>
+		<table class="layui-table">
+		  <tbody>
+		    <tr>
+		      <td>服务器配置</td>
+		      <td><?=$system_version?></td>
+		    </tr>
+		    <tr>
+		      <td>php版本</td>
+		      <td><?=$php_version?></td>
+		    </tr>
+		    <tr>
+		      <td>php最大上传文件</td>
+		      <td><?=$max_upload?></td>
+		    </tr>
+		    <tr>
+		      <td>php最大超时</td>
+		      <td><?=$max_ex_time?></td>
+		    </tr>
+		    <tr>
+		      <td>服务器时间</td>
+		      <td><?=$systemtime?></td>
+		    </tr>
+		  </tbody>
+		</table>
+		<p>开发者：浮云</p>
+		<p>邮箱：1440030538@qq.com</p>
+	</div>
+
+{/block}

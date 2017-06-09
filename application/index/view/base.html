@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	{include file="public/header" /}
+	<meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+	{block name="resource"}{/block}
+	<style type="text/css">
+		.boke-wrap{max-width: 1100px;margin:0 auto;overflow: hidden;zoom: 1;margin-top: 10px;}
+		.layui-main{height: 1200px;background-color: #ddd;}
+		footer{width: 100%;height: 48px;background-color: #393D49;padding-top: 20px;}
+		footer p{text-align: center;color: #fff;padding: 2px;}
+	</style>
+	{block name="head"}{/block}
+</head>
+<body>
+{block name="nav"}
+	<!--导航条-->
+	{include file="public/nav" /}
+	<!--导航条结束-->
+{/block}
+
+{block name="main"}{/block}
+
+{block name="footer"}
+	{include file="public/footer" /}
+{/block}
+</body>
+</html>

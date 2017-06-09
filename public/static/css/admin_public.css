@@ -1,0 +1,32 @@
+*{margin: 0px;padding: 0px;}
+.fuyun-app{padding:10px;background: #efefef;border:1px solid #f3f3f4;}
+.layui-table thead tr{background-color:#eff2f7;}
+.layui-table tr:hover, .layui-table[lay-even] tr:nth-child(even){
+  background-color:#fbfdff;
+}
+h5{
+	font-family: inherit;
+	font-weight: 500;
+	line-height: 1.1;
+	color: inherit;
+	font-weight: 700;
+	font-family: "open sans","Helvetica Neue",Helvetica,Arial,sans-serif;
+	color: #676a6c;
+}
+.ibox-content{padding: 10px;background-color: #fff;}
+.ibox-search-form{position: relative;}
+.fuyun-form-item{}
+.fuyun-form-item label{display: inline-block;width: 100%;color: #676a6c;}
+
+
+.fuyun-title{-moz-border-bottom-colors: none;-moz-border-left-colors: none;-moz-border-right-colors: none;-moz-border-top-colors: none;background-color: #fff;border-color: #e7eaec;-webkit-border-image: none;-o-border-image: none;border-image: none;border-style: solid solid none;border-width: 4px 0 0;color: inherit;margin-bottom: 0;padding: 14px 15px 12px;border-bottom: 1px solid #ddd;}
+.fuyun-app .search-content{padding: 10px;background-color: #fff;}
+.main-box{padding: 15px;background-color: #fff;}
+.main-box .layui-table{}
+.fuyun-add-btn{float: right;margin-top: -23px;}
+.fuyun-btn-del{
+	background-color: #FF4949;
+}
+
+.content-box{background-color: #fff;}
+.padding-10{padding: 10px;}

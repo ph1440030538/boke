@@ -1,0 +1,120 @@
+{extend name="base" /}
+{block name="head"}
+	<style type="text/css">
+		.message-index{max-width: 800px;}
+		.comment-box{height: 500px;overflow: hidden;position: relative;}
+		.comment-box .bg{position: absolute;width: 100%;height: 100%;top: 0px;left: 0px;}
+		.comment-box .content{height: 500px;width: 1000px;position: relative;}
+		.comment-box p{position: absolute;z-index: 9999;}
+		.message-box{background-color: #fff;padding: 20px;}
+		.nickname{width: 30%;}
+		.layui-input-block{margin-left: 0px;}
+		.swiper-container{height: 500px;z-index: -99;}
+	</style>
+{/block}
+
+{block name="main"}
+	<div class="boke-wrap message-index">
+		<div id="comment-box" class="comment-box">
+			<div class="content">
+				<p v-for="p in list_p" :style="{left: p.left+'px',top: p.top + 'px',color: p.color,fontSize:p.fontSize+'px' }">{{p.title}}</p>
+			</div>
+			<div class="bg">
+				<div class="swiper-container">
+				    <div class="swiper-wrapper">
+				        <div class="swiper-slide" style="background-image: url(http://wpicture.oss-cn-shanghai.aliyuncs.com/boke/images/comment_bg_1.jpg);background-size: 100%100%;"></div>
+				        <div class="swiper-slide" style="background-image: url(http://wpicture.oss-cn-shanghai.aliyuncs.com/boke/images/comment_bg_2.jpg);background-size: 100%100%;"></div>
+				        <div class="swiper-slide" style="background-image: url(http://wpicture.oss-cn-shanghai.aliyuncs.com/boke/images/comment_bg_3.jpg);background-size: 100%100%;"></div>
+				        <div class="swiper-slide" style="background-image: url(http://wpicture.oss-cn-shanghai.aliyuncs.com/boke/images/comment_bg_4.jpg);background-size: 100%100%;"></div>
+				    </div>
+			    </div>
+			</div>
+		</div>
+		<div class="message-box">
+			<div class="layui-form-item layui-form-text">
+				<!-- <label class="layui-form-label">留言</label> -->
+				<div class="layui-input-block">
+					<textarea name="desc" placeholder="请输入留言" class="layui-textarea"></textarea>
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<div class="layui-input-block">
+					<button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+					<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript" src="http://cdn.bootcss.com/vue/2.3.0/vue.js"></script>
+		<link rel="stylesheet" href="/static/swiper/swiper.min.css">
+		<script type="text/javascript" src="/static/swiper/swiper.min.js"></script>
+
+		<script type="text/javascript">
+			var width = $(".comment-box").width();
+			var height = $(".comment-box").height()-30;
+			vm = new Vue({
+				el:"#comment-box",
+				data:{
+					default_color:['#f44336','#e91e63','#9c27b0','#673ab7','#2196f3','#03a9f4','#00bcd4','#009688','#8bc34a','#ffeb3b','#ffc107','#ff9800','#ff5722','#795548','#9e9e9e'],
+					default_p:['真的不错！','测试！','测试！','测试！','测试！'],
+					list_p:[],
+				},
+				created: function(){
+					for (var i = this.default_p.length; i > 0; i--) {
+						var left = Math.ceil(Math.random()*width);
+						var top = Math.ceil(Math.random()*height);
+						var fontSize = Math.ceil(Math.random()*9)+18;
+						var stup = Math.ceil(Math.random()*9)+1;
+						var color = this.default_color[Math.floor(Math.random()*(this.default_color.length-1))];
+						this.list_p.push({ 'title':this.default_p[i],'top':top,'left':width,'fontSize':fontSize,'color':color,stup:stup});
+					}
+				}
+			});
+
+			window.setInterval(function(){
+				$(vm.list_p).each(function(index, value){
+					vm.list_p[index].left -= vm.list_p[index].stup;
+					if(vm.list_p[index].left < 0 ){
+						vm.list_p.splice(index,1);
+						vm.list_p.push(random_p());
+
+					}
+				});
+			},60);
+
+			function random_p(title = ''){
+				var left = Math.ceil(Math.random()*width);
+				var top = Math.ceil(Math.random()*height);
+				var fontSize = Math.ceil(Math.random()*9)+18;
+				var stup = Math.ceil(Math.random()*9)+1;
+				var color = vm.default_color[Math.floor(Math.random()*vm.default_color.length-1)];
+				if(title == ''){
+					title = vm.default_p[Math.floor(Math.random()*vm.default_p.length-1)];
+				}
+				
+				return { 'title':title,'top':top,'left':width,'fontSize':fontSize,'color':color,stup:stup};
+			}
+
+
+			$(".layui-btn").click(function(){
+				var content = $(".layui-textarea").val();
+			    $.ajax({
+			    	type:'post',
+			    	url:"{:Url('Portal/Message/send')}",
+			    	data:{'content': content},
+			    	dataType:'json',
+			    	success:function(result){
+			        	if(result.status == 200){
+			        		layer.msg('留言成功！');
+			        		vm.list_p.push(random_p(content));
+			        	}
+			    }});
+			});
+
+
+			var mySwiper = new Swiper('.swiper-container', {
+				autoplay: 5000,//可选选项，自动滑动
+				effect : 'fade',
+			})
+		</script>
+	</div>
+{/block}
