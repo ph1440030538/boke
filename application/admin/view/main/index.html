@@ -5,6 +5,7 @@
 <script src="//unpkg.com/vue/dist/vue.js"></script>
 <script src="//unpkg.com/element-ui@1.3.4/lib/index.js"></script>
 <script type="text/javascript" src="/static/layui/layui.js"></script>
+<script type="text/javascript" src="http://cdn.bootcss.com/jquery/3.2.1/jquery.js"></script>
 <link rel="stylesheet" type="text/css" href="/static/layui/css/layui.css">
 <style type="text/css">
   *{margin:0px;padding: 0px;}
@@ -19,10 +20,13 @@
   .el-tabs,.el-tabs__content,#main-iframe{width: 100%;border:0px;height: 100%;}
   .tag-box{height: 30px;overflow: hidden;}
   .tag-box .el-tag{padding:3px 8px;}
+
+  .left-menu{background-color: #efefef;}  
+  [v-cloak] {display: none;}
 </style>
 </head>
 <body>
-<div id="main">
+<div id="main" v-cloak>
   <el-row class="nav">
     <el-col :span="4">
       <div class="logo"><i class="el-icon-document"></i>管理后台</div>
@@ -31,7 +35,7 @@
       <el-menu theme="dark" :default-active="activeIndex" class="el-menu" mode="horizontal" @select="handleSelect">
         <el-submenu index="2">
           <template slot="title">我的</template>
-          <el-menu-item index="2-1">个人设置</el-menu-item>
+          <el-menu-item index="2-1" v-on:click="set_user">个人设置</el-menu-item>
           <el-menu-item index="2-2">站点设置</el-menu-item>
           <el-menu-item index="2" v-on:click="exit()">
           退出
@@ -47,7 +51,7 @@
     </el-col>
   </el-row>
   <el-row>
-    <el-col :span="4" class="left-menu">
+    <el-col :span="4" class="left-menu" :style="{minHeight: leftheight + 'px' }">
       <div class="grid-content bg-purple-dark">
         <el-row class="tac">
           <el-col :span="24">
@@ -74,19 +78,22 @@
       </div>
 
       <iframe id="main-iframe" :src="main_src"></iframe>
-      
     </el-col>
   </el-row>
 </div>
 </body>
+<script type="text/javascript">
+layui.use(['layer']);
+</script>
 <!-- 先引入 Vue -->
-<script>
+<script type="text/javascript">
 var Main = {
     data() {
       return {
         activeIndex: '1',
         activeIndex2: '1',
         height: (window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight) - 90,
+        leftheight: (window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight) - 60,
         default_main_src: "{:Url('content')}",
         main_src: "{:Url('content')}",
         tags: [
@@ -100,10 +107,11 @@ var Main = {
     },
     methods: {
       exit(){
-        window.location.href="{:Url('Common/logout')}"
+        window.location.href="{:Url('Common/logout')}";
       },
       flush(){
-        // layer.msg('清楚缓存成功');
+        layer.msg('清楚缓存成功');
+        $.ajax({type:'get',url:"{:Url('admin/flush')}"});
       },
 
       handleSkipUrl(url,name,id){
@@ -115,7 +123,6 @@ var Main = {
             this.tags[i].type = "";
             is_add = true;
           }
-          
         }
         if(!is_add){
           this.tags.push({name:name,url:url,id:id,type:''});
@@ -143,9 +150,11 @@ var Main = {
           }
         }
       },
-
       handleSelect(key, keyPath) {
         console.log(key, keyPath);
+      },
+      set_user(){
+        this.main_src = "{:Url('main/user')}";
       }
     }
   }

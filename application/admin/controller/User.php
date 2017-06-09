@@ -50,6 +50,7 @@ class User extends Admin
 	public function edit(){
 		if(Request::instance()->isPost()){
 			$post = Request::instance()->post();
+			$post['password'] = $this->Model->encryption($post['password']);
 			$result = $this->Model->allowField(true)->validate(true)->save($post,['id'=>$post['id']]);
 
 			if(false === $result){

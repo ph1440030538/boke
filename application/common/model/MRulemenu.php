@@ -99,22 +99,25 @@ class MRulemenu extends Model
     		return $userMenu;
     	}
 
-        //获取用户菜单
-        $MRuleUserMenu = new MRuleUserMenu();
-        $userMenuIds = $MRuleUserMenu->getUserMenuIds($uid);
-        $where = [
-            'status'=>['neq',111],
-        ];
+      //获取用户菜单
+      $MRuleUserMenu = new MRuleUserMenu();
+      $userMenuIds = $MRuleUserMenu->getUserMenuIds($uid);
+      $where = [
+          'status'=>['neq',111],
+      ];
 
-        $access_admin_id = Session::get('access_admin_id');
-        if(!in_array($uid, $access_admin_id)){
-            $where['id'] = ['in', $userMenuIds];
+      $access_admin_id = Session::get('access_admin_id');
+      if(!in_array($uid, $access_admin_id)){
+        if(empty($userMenuIds)){
+          return [];
         }
+        $where['id'] = ['in', $userMenuIds];
+      }
 
-        $ruleMenu = self::where($where)->order("sort asc")->select();
-        $ruleMenu = $this->getMenu($ruleMenu);
+      $ruleMenu = self::where($where)->order("sort asc")->select();
+      $ruleMenu = $this->getMenu($ruleMenu);
 
-        Cache::set("userMenu_uid:{$uid}",$ruleMenu);
-        return $ruleMenu;
+      Cache::set("userMenu_uid:{$uid}",$ruleMenu);
+      return $ruleMenu;
 	}
 }

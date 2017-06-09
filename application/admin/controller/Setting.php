@@ -17,14 +17,21 @@ class Setting extends Admin
 	/**
 	 * 列表页面
 	 */
-	public function web(){
-		return view('web',[]);
+	public function index(){
+		$list = $this->Model->getList(Request::instance()->post());
+		return view('index',[
+			'list' => $list,
+		]);
 	}
 
 	public function add(){
 		if(Request::instance()->isPost()){
 			$post = Request::instance()->post();
-			$result = $this->Model->validate(true)->save($post);
+			if(MSetting::where(['setting_key'=>$post['setting_key']])->count()>0){
+				$this->error("已经存在该标识");
+			}
+
+			$result = $this->Model->allowField(true)->validate(true)->save($post);
 
 			if(false === $result){
 			    $this->error($this->Model->getError());
@@ -40,7 +47,11 @@ class Setting extends Admin
 	public function edit(){
 		if(Request::instance()->isPost()){
 			$post = Request::instance()->post();
-			$result = $this->Model->validate(true)->save($post,['id'=>$post['id']]);
+			if(MSetting::where(['id'=>['neq',$post['id']],'setting_key'=>$post['setting_key']])->count()>0){
+				$this->error("已经存在该标识");
+			}
+
+			$result = $this->Model->allowField(true)->validate(true)->save($post,['id'=>$post['id']]);
 
 			if(false === $result){
 			    // 验证失败 输出错误信息
@@ -49,11 +60,10 @@ class Setting extends Admin
 				$this->success("成功！");
 			}
 		}else{
-			$id = Request::instance()->get('id/d');
+			$id = Request::instance()->get('id/d',0);
 			$model = $this->findOne($id);
-			$option = $this->MCategory->getOption($model['category_id']);
-			
-			return view('edit',[ 'model' => $model,'option'=>$option ]);
+			// var_dump( $model );die();
+			return view('edit',[ 'model' => $model]);
 		}
 	}
 
@@ -69,7 +79,6 @@ class Setting extends Admin
 	}
 
 	public function findOne($id){
-		return MBokearticle::find()->where("id",$id)->find();
+		return MSetting::find()->where("id",$id)->find();
 	}
-
 }

@@ -39,24 +39,35 @@ class MUser extends Model
 		]);
 	}
 
+	public function changePassword($uid, $password, $repassword){
+		return self::where("id", $uid)->update([
+			'password' => $this->encryption($password),
+			'update_time' => time(),
+		]);
+	}
 
-    public function isCheckLogin($data){
-    	$user = $this->getUserByUserName($data['username']);
-    	if($user['password'] == $this->encryption($data['password'])){
-    		Session::set("user",[
-    			'username' => $user['username'],
-    			'id' => $user['id'],
-    		]);
-    		return $user;
-    	}
-    	return false;
-    }
 
-    public function getUserByUserName($username){
-    	return self::where(['username'=>$username])->find();
-    }
+  public function isCheckLogin($data){
+  	$user = $this->getUserByUserName($data['username']);
+  	if($user['password'] == $this->encryption($data['password'])){
+  		Session::set("user",[
+  			'username' => $user['username'],
+  			'id' => $user['id'],
+  		]);
+  		return $user;
+  	}
+  	return false;
+  }
 
-    public function encryption($password){
-    	return md5($password.sha1($password)."boke");
-    }
+  public function getUserByUserName($username){
+  	return self::where(['username'=>$username])->find();
+  }
+
+  public function getUserById($uid){
+  	return self::where(['id'=>$uid])->find();
+  }
+
+  public function encryption($password){
+  	return md5($password.sha1($password)."boke");
+  }
 }

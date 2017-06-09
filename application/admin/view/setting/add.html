@@ -1,0 +1,158 @@
+{extend name="base" /}
+{block name="head"}
+<link href="/static/umeditor/themes/default/css/umeditor.css" type="text/css" rel="stylesheet">
+<script type="text/javascript" src="/static/umeditor/third-party/jquery.min.js"></script>
+<script type="text/javascript" src="/static/umeditor/third-party/template.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="/static/umeditor/umeditor.config.js"></script>
+<script type="text/javascript" charset="utf-8" src="/static/umeditor/umeditor.min.js"></script>
+<script type="text/javascript" src="/static/umeditor/lang/zh-cn/zh-cn.js"></script>
+
+<style type="text/css">
+	.layui-form{padding: 10px;}
+  .avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #20a0ff;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    line-height: 178px;
+    text-align: center;
+  }
+  .avatar {
+    width: 178px;
+    height: 178px;
+    display: block;
+  }
+
+</style>
+{/block}
+{block name="main"}
+<div class="boke-wrap" id="fuyun-app">
+	<form class="layui-form" method="post">
+		<div class="layui-tab">
+		  <ul class="layui-tab-title">
+		    <li class="layui-this" v-on:click="setting_type = 0;">文本</li>
+		    <li v-on:click="setting_type = 1;">图片</li>
+		    <li v-on:click="setting_type = 2;">编辑器</li>
+		  </ul>
+		  <div class="layui-tab-content">
+				<div class="layui-form-item">
+					<input type="text" name="setting_key" placeholder="请输入设置标识" class="layui-input">
+				</div>
+
+	    	<div class="layui-tab-item layui-show">
+
+		    	<div class="layui-form-item">
+		    		<input type="text" placeholder="请输入设置文本" class="layui-input setting_text">
+		    	</div>
+	    	</div>
+	    	<div class="layui-tab-item">
+
+		    	<div class="layui-form-item">
+						<el-upload
+						  class="avatar-uploader"
+						  action="{:Url('upload/image')}"
+						  :show-file-list="false"
+						  :on-success="handleAvatarSuccess"
+						  :before-upload="beforeAvatarUpload">
+						  <img v-if="imageUrl" :src="imageUrl" class="avatar">
+						  <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+						</el-upload>
+						<input type="hidden" class="setting_image" :value="imageUrl">
+		    	</div>
+	   		</div>
+	    	<div class="layui-tab-item">
+
+					<div class="layui-form-item">
+						<script type="text/plain" id="myEditor" name="setting_value" style="width:420px;height:260px;">
+						    <p>这里我可以写一些输入提示</p>
+						</script>
+					</div>
+	    	</div>
+				<div class="layui-form-item">
+					<input type="hidden" name="setting_type" :value="setting_type">
+					<button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+					<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+				</div>
+		  </div>
+		</div>
+	</form>
+</div>
+<script type="text/javascript">
+	var um = UM.getEditor('myEditor');
+</script>
+<script type="text/javascript">
+
+	layui.use(['form','element'], function(){
+		var element = layui.element();
+  	var $ = layui.jquery,form = layui.form();
+
+		form.on('submit(formDemo)', function(data){
+			var setting_type = $("input[name='setting_type']").val();
+			if(setting_type==0){
+				data.field.setting_value = $(".setting_text").val();
+			}else if(setting_type==1){
+				data.field.setting_value = $(".setting_image").val();
+			}else{
+				data.field.setting_value = $("#myEditor").html();
+			}
+			
+			$.ajax({ 
+				type: "post", 
+				url: data.form.action, 
+				data: data.field,
+				dataType: 'json', 
+				success: function(result){ 
+					if(result['code'] == 1){
+						parent.document.location.reload();
+						parent.layer.closeAll();
+						parent.layer.msg(result['msg']);
+					}else{
+						layer.msg(result['msg']);
+					}
+				} 
+			});
+			return false;
+		});
+
+	})
+
+  fuyun.components(['page'],{
+    el:"#fuyun-app",
+    data:{
+      labelPosition: 'top',
+      imageUrl: '',
+      setting_type:0,
+    },
+    methods:{
+      handleAvatarSuccess(res, file) {
+      	var image_url = file.response.data.src;
+        this.imageUrl = image_url;
+      },
+      beforeAvatarUpload(file) {
+        const isLt2M = file.size / 1024 / 1024 < 2;
+
+        if (!isLt2M) {
+          this.$message.error('上传头像图片大小不能超过 2MB!');
+        }
+        return isLt2M;
+      }
+
+    }
+  });
+</script>
+{/block}
+
+
+
+
+		

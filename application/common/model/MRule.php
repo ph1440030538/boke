@@ -61,18 +61,20 @@ class MRule extends Model
 	    		$this->getChildRuleUserGroup($user_group_ids);
 	    	}
     	}
-    	
+    	 // dump( $uid );die();
     	//查询权限组表
     	$group_ids = array_unique($this->group_ids);
+        $group_ids = empty($group_ids) ? -1:$group_ids;
     	$user_group_data = Db::table("boke_rule_group")->where([
     		'id' => ['in', $group_ids],
     	])->select();
-        
+       
     	foreach ($user_group_data as $key => $user_group) {
     		$this->rule_ids = array_merge($this->rule_ids, json_decode($user_group['rule_ids']));
     	}
     	//查询权限节点表
     	$rule_ids = array_unique($this->rule_ids);
+        $rule_ids = empty($rule_ids) ? -1:$rule_ids;
     	$rule_data = Db::table("boke_rule")->where([
     		'id' => ['in', $rule_ids]
     	])->select();
